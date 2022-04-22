@@ -1,5 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using Domain.User;
+using System;
 
 namespace Persistance
 {
@@ -14,11 +15,15 @@ namespace Persistance
         public DbSet<User> Users { get; set; }
         public DbSet<LastUserView> UsersViews { get; set; }
 
+        public DbSet<UserRequest> UsersRequests { get; set; }
+
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<User>().Property(user => user.FirstName).HasDefaultValue(string.Empty);
             modelBuilder.Entity<User>().Property(user => user.SecondName).HasDefaultValue(string.Empty);
-            modelBuilder.Entity<User>().Property(user => user.PasswordHash).HasConversion(hash => hash, password => BCrypt.Net.BCrypt.HashPassword(password));
+            modelBuilder.Entity<User>().Property(u => u.RoleId).HasConversion<int>();
+            modelBuilder.Entity<Role>().Property(role => role.Id).HasConversion<int>();
+            modelBuilder.Entity<LastUserView>().Property(v => v.LastUpdateDate).HasDefaultValue(DateTime.UnixEpoch);
         }
     }
 }

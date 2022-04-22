@@ -21,7 +21,9 @@ namespace Domain.User
         public User Doctor { get; set; }
 
         [DatabaseGenerated(DatabaseGeneratedOption.Computed)]
-        public DateTime Date { get; set; }
+        public DateTime LastViewDate { get; set; }
+        [DatabaseGenerated(DatabaseGeneratedOption.Computed)]
+        public DateTime LastUpdateDate { get; set; }
 
     }
 }
