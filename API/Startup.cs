@@ -53,10 +53,13 @@ namespace anxietyDiary
 
             app.UseHttpsRedirection();
 
-            app.UseRouting();
+
             app.UseCors("CorsPolicy");
 
             app.UseAuthentication();
+
+            app.UseRouting();
+
             app.UseAuthorization();
 
             app.UseEndpoints(endpoints =>

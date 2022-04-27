@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using Toolbelt.ComponentModel.DataAnnotations.Schema.V5;
 using Domain.Enums;
 using Microsoft.AspNetCore.Identity;
+using System;
 
 namespace Domain.User
 {
@@ -39,6 +40,11 @@ namespace Domain.User
         [Column(TypeName = DatabaseConstants.standartStringType)]
         [MaxLength(DatabaseConstants.standartStringLength)]
         public string SecondName { set; get; }
+
+        public DateTime LastRecordModify { set; get; }
+        public bool isSearching { set; get; }
+
+        public string Description { set; get; }
 
         [InverseProperty("Patient")]
         public virtual ICollection<LastUserView> Patients { get; set; }

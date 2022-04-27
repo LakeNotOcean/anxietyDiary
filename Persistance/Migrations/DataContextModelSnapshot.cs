@@ -84,6 +84,11 @@ namespace Persistance.Migrations
                     b.Property<string>("ConcurrencyStamp")
                         .HasColumnType("longtext");
 
+                    b.Property<string>("Description")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("longtext")
+                        .HasDefaultValue("");
+
                     b.Property<string>("Email")
                         .HasMaxLength(50)
                         .HasColumnType("varchar(50)");
@@ -96,6 +101,11 @@ namespace Persistance.Migrations
                         .HasMaxLength(50)
                         .HasColumnType("varchar(50)")
                         .HasDefaultValue("");
+
+                    b.Property<DateTime>("LastRecordModify")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("datetime(6)")
+                        .HasDefaultValue(new DateTime(1970, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc));
 
                     b.Property<bool>("LockoutEnabled")
                         .HasColumnType("tinyint(1)");
@@ -138,6 +148,9 @@ namespace Persistance.Migrations
                         .HasMaxLength(50)
                         .HasColumnType("varchar(50)");
 
+                    b.Property<bool>("isSearching")
+                        .HasColumnType("tinyint(1)");
+
                     b.HasKey("Id");
 
                     b.HasIndex("RoleId");
@@ -151,10 +164,13 @@ namespace Persistance.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
+                    b.Property<int>("Request")
+                        .HasColumnType("int");
+
                     b.Property<int>("UserSourceId")
                         .HasColumnType("int");
 
-                    b.Property<int>("UserTargetId")
+                    b.Property<int?>("UserTargetId")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
@@ -206,9 +222,7 @@ namespace Persistance.Migrations
 
                     b.HasOne("Domain.User.User", "UserTarget")
                         .WithMany()
-                        .HasForeignKey("UserTargetId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("UserTargetId");
 
                     b.Navigation("UserSource");
 

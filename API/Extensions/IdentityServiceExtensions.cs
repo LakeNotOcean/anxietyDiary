@@ -1,7 +1,6 @@
 using System;
 using System.Text;
 using Api.Services;
-using API.Services;
 using Domain.User;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
@@ -35,7 +34,10 @@ namespace API.Extensions
 
             var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(config["Jwt:Key"]));
 
-            services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+            services.AddAuthentication(opt =>
+            {
+                opt.DefaultAuthenticateScheme = "Bearer";
+            })
                 .AddJwtBearer(opt =>
                 {
                     opt.TokenValidationParameters = new TokenValidationParameters
@@ -43,6 +45,8 @@ namespace API.Extensions
                         ValidateIssuer = true,
                         ValidateAudience = true,
                         ValidateLifetime = true,
+                        ValidAudience = config["Jwt:Audience"],
+                        ValidIssuer = config["Jwt:Issuer"],
                         ValidateIssuerSigningKey = true,
                         IssuerSigningKey = key
                     };

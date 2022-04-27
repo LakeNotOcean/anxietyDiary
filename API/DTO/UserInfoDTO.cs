@@ -1,19 +1,12 @@
-using System;
-
 namespace API.DTO
 {
-    public class UserDTO
+    public class UserInfoDTO
     {
         public string UserName { get; set; }
 
         public string FirstName { get; set; }
         public string SecondName { get; set; }
 
-        public RoleDTO Role { get; set; }
-
-        public string Token { get; set; }
-
-        public bool isSearching { get; set; }
         public string Description { get; set; }
     }
 }

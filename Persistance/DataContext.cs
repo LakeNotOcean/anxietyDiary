@@ -21,9 +21,13 @@ namespace Persistance
         {
             modelBuilder.Entity<User>().Property(user => user.FirstName).HasDefaultValue(string.Empty);
             modelBuilder.Entity<User>().Property(user => user.SecondName).HasDefaultValue(string.Empty);
+            modelBuilder.Entity<User>().Property(user => user.Description).HasDefaultValue(string.Empty);
             modelBuilder.Entity<User>().Property(u => u.RoleId).HasConversion<int>();
+            modelBuilder.Entity<User>().Property(u => u.LastRecordModify).HasDefaultValue(DateTime.UnixEpoch);
             modelBuilder.Entity<Role>().Property(role => role.Id).HasConversion<int>();
             modelBuilder.Entity<LastUserView>().Property(v => v.LastUpdateDate).HasDefaultValue(DateTime.UnixEpoch);
+            modelBuilder.Entity<UserRequest>().Property(userRequest => userRequest.Request).HasConversion<int>();
+
         }
     }
 }

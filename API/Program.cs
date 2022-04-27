@@ -9,6 +9,8 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.EntityFrameworkCore;
 using Persistance;
+using Microsoft.AspNetCore.Identity;
+using Domain.User;
 
 namespace anxietyDiary
 {
@@ -24,8 +26,9 @@ namespace anxietyDiary
             try
             {
                 var context = services.GetRequiredService<DataContext>();
+                var userManager = services.GetRequiredService<UserManager<User>>();
                 context.Database.Migrate();
-                await Seed.SeedData(context, services.GetRequiredService<ILogger<Seed>>());
+                await Seed.SeedData(context, userManager, services.GetRequiredService<ILogger<Seed>>());
             }
             catch (Exception ex)
             {

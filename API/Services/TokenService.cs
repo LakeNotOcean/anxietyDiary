@@ -7,7 +7,7 @@ using Domain.User;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 
-namespace API.Services
+namespace Api.Services
 {
     public class TokenService
     {
@@ -18,6 +18,7 @@ namespace API.Services
                 new Claim(ClaimTypes.Name,user.UserName),
                 new Claim(ClaimTypes.NameIdentifier,user.Id.ToString()),
                 new Claim(ClaimTypes.Email,user.Email),
+                new Claim(ClaimTypes.Role,user.Role.Name)
             };
             var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(config["Jwt:Key"]));
             var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha512Signature);
@@ -25,10 +26,10 @@ namespace API.Services
             var tokenDescriptor = new SecurityTokenDescriptor
             {
                 Subject = new ClaimsIdentity(claims),
-                Expires = DateTime.Now.AddMinutes(int.Parse(config["Jwt:lifeTime"])),
+                Expires = DateTime.Now.AddMinutes(int.Parse(config["Jwt:LifeTime"])),
                 SigningCredentials = creds,
                 Issuer = config["Jwt:Issuer"],
-                Audience = config["Jwt:Audience"]
+                Audience = config["Jwt:Audience"],
             };
 
             var tokenHandler = new JwtSecurityTokenHandler();

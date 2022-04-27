@@ -1,9 +1,11 @@
+using System.Collections.Generic;
+using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
 using anxietyDiary.Controllers;
 using Api.DTO;
 using API.DTO;
-using API.Services;
+using Api.Services;
 using Domain.Enums;
 using Domain.User;
 using Microsoft.AspNetCore.Authorization;
@@ -45,7 +47,7 @@ namespace Api.Controllers
         public async Task<ActionResult<UserDTO>> Login(LoginDTO loginDto)
         {
             var user = await _userManager.FindByEmailAsync(loginDto.email);
-            user.Role = await _roleManager.FindByIdAsync(user.RoleId.ToString());
+
 
             if (user == null)
             {
@@ -56,17 +58,8 @@ namespace Api.Controllers
 
             if (result.Succeeded)
             {
-                return new UserDTO
-                {
-                    UserName = user.UserName,
-                    FirstName = user.FirstName,
-                    SecondName = user.SecondName,
-                    Role = new RoleDTO
-                    {
-                        RoleName = user.Role.Name
-                    },
-                    Token = _tokenService.CreateToken(user, _config)
-                };
+                user.Role = await _roleManager.FindByIdAsync(user.RoleId.ToString());
+                return createUserObject(user);
             }
             return Unauthorized();
         }
@@ -93,42 +86,59 @@ namespace Api.Controllers
             var result = await _userManager.CreateAsync(user, registerDto.Password);
             if (result.Succeeded)
             {
-                return new UserDTO
-                {
-                    UserName = user.UserName,
-                    FirstName = user.FirstName,
-                    SecondName = user.SecondName,
-                    Role = new RoleDTO
-                    {
-                        RoleName = user.Role.Name
-                    },
-                    Token = _tokenService.CreateToken(user, _config)
-                };
+                return createUserObject(user);
             }
             return BadRequest("problem register user");
         }
 
         [Authorize]
-        [HttpGet]
+        [HttpGet("user")]
         public async Task<ActionResult<UserDTO>> getCurrentUser()
         {
             var user = await _userManager.FindByEmailAsync(User.FindFirstValue(ClaimTypes.Email));
-            return await createUserObject(user);
+            user.Role = await _roleManager.FindByIdAsync(user.RoleId.ToString());
 
+            return createUserObject(user);
         }
-        private async Task<ActionResult<UserDTO>> createUserObject(User user)
+
+        [Authorize]
+        [HttpPost]
+        public async Task<IActionResult> changeUser(UserDTO user)
+        {
+            var currentUser = await _userManager.FindByEmailAsync(User.FindFirstValue(ClaimTypes.Email));
+            changeUserEntity(ref currentUser, user);
+            var result = await _userManager.UpdateAsync(currentUser);
+            if (result.Succeeded)
+            {
+                return Ok();
+            }
+
+            return BadRequest("problem change user");
+        }
+
+
+        private UserDTO createUserObject(User user)
         {
             return new UserDTO
             {
                 UserName = user.UserName,
                 FirstName = user.FirstName,
                 SecondName = user.SecondName,
+                Description = user.Description,
+                isSearching = user.isSearching,
                 Role = new RoleDTO
                 {
-                    RoleName = (await _roleManager.FindByIdAsync(user.RoleId.ToString())).Name
+                    RoleName = user.Role.Name
                 },
                 Token = _tokenService.CreateToken(user, _config)
             };
+        }
+        private void changeUserEntity(ref User user, UserDTO userDto)
+        {
+            user.isSearching = userDto.isSearching;
+            user.FirstName = user.SecondName;
+            user.SecondName = userDto.SecondName;
+            user.Description = userDto.Description;
         }
     }
 }
