@@ -11,6 +11,8 @@ using Microsoft.EntityFrameworkCore;
 using Persistance;
 using Microsoft.AspNetCore.Identity;
 using Domain.User;
+using API.Extensions;
+using Persistance.Lib;
 
 namespace anxietyDiary
 {
@@ -26,9 +28,17 @@ namespace anxietyDiary
             try
             {
                 var context = services.GetRequiredService<DataContext>();
-                var userManager = services.GetRequiredService<UserManager<User>>();
                 context.Database.Migrate();
-                await Seed.SeedData(context, userManager, services.GetRequiredService<ILogger<Seed>>());
+                await Seed.SeedDiaryData(context);
+
+                var dbSetDiaries = context.GetDbSetDiariesTypes();
+                foreach (var diary in dbSetDiaries)
+                {
+                    await DiariesCheck.Check(diary.Value, context);
+                }
+
+                var userManager = services.GetRequiredService<UserManager<User>>();
+                await Seed.SeedUserData(context, userManager, services.GetRequiredService<ILogger<Seed>>());
             }
             catch (Exception ex)
             {

@@ -3,16 +3,19 @@ using System.Linq;
 using System.Threading.Tasks;
 using Domain.User;
 using System.Reflection;
-using Domain;
 using Microsoft.Extensions.Logging;
 using Domain.Enums;
 using Microsoft.AspNetCore.Identity;
+using Domain.DiaryExpensions;
+using System.IO;
+using System.Text.Json;
+using System.Text.Json.Serialization;
 
 namespace Persistance
 {
     public class Seed
     {
-        public static async Task SeedData(DataContext context, UserManager<User> userManager, ILogger<Seed> logger)
+        public static async Task SeedUserData(DataContext context, UserManager<User> userManager, ILogger<Seed> logger)
         {
             logger.LogInformation("SeedData started");
             if (!context.Roles.Any())
@@ -58,7 +61,51 @@ namespace Persistance
                 }, "12345Nn.");
 
             };
+
+            // var Categories = new List<DiaryCategory>{
+            //     new DiaryCategory
+            //     {
+            //         Name="Мысли, чувства, физиологические и поведенческие реакции",
+            //         Description=""
+            //     },
+            // };
+
+        }
+        public static async Task SeedDiaryData(DataContext context)
+        {
+            string path = Path.GetDirectoryName(Assembly.GetEntryAssembly().Location) + "/data/categories.json";
+            var Categories = readSeed<DiaryCategory>(path);
+            foreach (var cat in Categories)
+            {
+                if (!context.Categories.Any(c => c.Id == cat.Id))
+                {
+                    await context.AddAsync(cat);
+                }
+            }
+            var options = new JsonSerializerOptions();
+            options.Converters.Add(new JsonStringEnumConverterWithAttributeSupport(null, false, false, false, true));
+            path = Path.GetDirectoryName(Assembly.GetEntryAssembly().Location) + "/data/descriptions.json";
+            var Descriptions = readSeed<DiaryDescription>(path, options);
+            foreach (var descr in Descriptions)
+            {
+                if (!context.Descriptions.Any(d => d.ShortName == descr.ShortName))
+                {
+                    await context.AddAsync(descr);
+                }
+            }
             await context.SaveChangesAsync();
         }
+        private static List<T> readSeed<T>(string JsonDataPath, JsonSerializerOptions options = null) where T : class
+        {
+            List<T> source = new List<T> { };
+
+            using (StreamReader r = new StreamReader(JsonDataPath))
+            {
+                string json = r.ReadToEnd();
+                source = JsonSerializer.Deserialize<List<T>>(json, options);
+            }
+            return source;
+        }
     }
+
 }

@@ -5,7 +5,9 @@ using Microsoft.OpenApi.Models;
 using Persistance;
 using Microsoft.Extensions.Logging;
 using System;
-using anxietyDiary;
+using API.Services;
+using MediatR;
+using Api.CRUD;
 
 namespace API.Controllers.Extensions
 {
@@ -22,7 +24,9 @@ namespace API.Controllers.Extensions
             {
                 Console.WriteLine(config.GetConnectionString("DefaultConnection"));
                 var serverVersion = new MySqlServerVersion(new System.Version(8, 0, 27));
-                opt.UseMySql(config.GetConnectionString("DefaultConnection"), serverVersion).LogTo(Console.WriteLine, LogLevel.Information)
+                opt.UseMySql(config.GetConnectionString("DefaultConnection"),
+                             serverVersion,
+                             b => b.UseMicrosoftJson()).LogTo(Console.WriteLine, LogLevel.Information)
                     .EnableSensitiveDataLogging()
                     .EnableDetailedErrors();
             });
@@ -37,6 +41,14 @@ namespace API.Controllers.Extensions
                     policy.AllowAnyMethod().AllowAnyHeader().WithOrigins("http://localhost:3000");
                 });
             });
+
+
+            services.AddSingleton<DiaryService>(sp =>
+            {
+                var context = sp.GetRequiredService<DataContext>();
+                return new DiaryService(context);
+            });
+            services.AddMediatR(typeof(List.Handler).Assembly);
             return services;
         }
     }

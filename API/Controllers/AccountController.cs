@@ -14,6 +14,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
+using API.Core;
 
 namespace Api.Controllers
 {
@@ -68,11 +69,11 @@ namespace Api.Controllers
         {
             if (await _userManager.Users.AnyAsync(user => user.Email == registerDto.Email))
             {
-                return BadRequest("Email уже используется");
+                return BadRequest("Invalid email");
             }
             if (await _userManager.Users.AnyAsync(user => user.UserName == registerDto.UserName))
             {
-                return BadRequest("Имя пользователя уже используется");
+                return BadRequest("Ivalid UserName");
             }
             var user = new User
             {
@@ -108,6 +109,7 @@ namespace Api.Controllers
             var currentUser = await _userManager.FindByEmailAsync(User.FindFirstValue(ClaimTypes.Email));
             changeUserEntity(ref currentUser, user);
             var result = await _userManager.UpdateAsync(currentUser);
+
             if (result.Succeeded)
             {
                 return Ok();

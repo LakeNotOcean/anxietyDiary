@@ -1,9 +1,9 @@
 using System;
 using System.Threading.Tasks;
+using API.Core;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Logging;
 using Persistance;
 
 namespace anxietyDiary.Controllers
@@ -33,6 +33,23 @@ namespace anxietyDiary.Controllers
             {
                 return StatusCode(500);
             }
+        }
+
+        protected ActionResult HandleResult<T>(Result<T> result)
+        {
+            if (result is null)
+            {
+                return NotFound();
+            }
+            if (result.isSuccess && result.Value is not null)
+            {
+                return Ok(result.Value);
+            }
+            if (result.isSuccess)
+            {
+                return NotFound();
+            }
+            return BadRequest(result);
         }
 
     }
