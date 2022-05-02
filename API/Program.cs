@@ -34,7 +34,7 @@ namespace anxietyDiary
                 var dbSetDiaries = context.GetDbSetDiariesTypes();
                 foreach (var diary in dbSetDiaries)
                 {
-                    await DiariesCheck.Check(diary.Value, context);
+                    await DiariesCheck.Check(diary.Value.PropertyTypeInfo, context);
                 }
 
                 var userManager = services.GetRequiredService<UserManager<User>>();

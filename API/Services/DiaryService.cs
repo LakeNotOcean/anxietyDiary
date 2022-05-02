@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Reflection;
 using API.Extensions;
@@ -7,14 +8,14 @@ namespace API.Services
 {
     public class DiaryService
     {
-        private readonly Dictionary<string, TypeInfo> diariesDictionary;
+        private readonly Dictionary<string, DiaryProperty> diariesDictionary;
 
-        public DiaryService(DataContext context)
+        public DiaryService(Dictionary<string, DiaryProperty> diaries)
         {
-            diariesDictionary = context.GetDbSetDiaries();
+            diariesDictionary = diaries;
         }
 
-        public TypeInfo getDiaryTypeByName(string name)
+        public DiaryProperty getDiaryTypeByName(string name)
         {
             return diariesDictionary[name];
         }

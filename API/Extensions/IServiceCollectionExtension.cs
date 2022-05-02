@@ -8,6 +8,7 @@ using System;
 using API.Services;
 using MediatR;
 using Api.CRUD;
+using API.Extensions;
 
 namespace API.Controllers.Extensions
 {
@@ -45,8 +46,11 @@ namespace API.Controllers.Extensions
 
             services.AddSingleton<DiaryService>(sp =>
             {
-                var context = sp.GetRequiredService<DataContext>();
-                return new DiaryService(context);
+                using (var scope = sp.CreateScope())
+                {
+                    var db = scope.ServiceProvider.GetRequiredService<DataContext>();
+                    return new DiaryService(db.GetDbSetDiariesTypes());
+                }
             });
             services.AddMediatR(typeof(List.Handler).Assembly);
             return services;
