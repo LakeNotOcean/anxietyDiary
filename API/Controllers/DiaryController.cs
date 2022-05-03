@@ -5,6 +5,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using anxietyDiary.Controllers;
 using Api.CRUD;
+using API.Core;
 using API.CRUD;
 using API.DTO;
 using Domain.Diaries;
@@ -26,23 +27,18 @@ namespace API.Controllers
 
         }
 
-        // [HttpGet("{name}/{count:int}/{date}")]
-        // public async Task<IActionResult> GetDayRecords(string name, int count, DateTime date, CancellationToken ct)
-        // {
-
-        // }
 
         [HttpGet]
-        public async Task<IActionResult> GetDayRecordsAll(string name, DateTime date, CancellationToken ct)
+        public async Task<IActionResult> GetDayRecords(string name, DateTime date, [FromQuery] PagingParams param, CancellationToken ct)
         {
-            var result = await Mediator.Send(new List.Query() { DiaryName = name, Date = date });
+            var result = await Mediator.Send(new List.Query() { DiaryName = name, Date = date, Params = param });
             return HandleResultDynamic<BaseDiary>(result);
         }
 
         [HttpPost]
-        public async Task<IActionResult> AddRecord(string name, JsonObject body)
+        public async Task<IActionResult> AddRecord(JsonObject jsonParams)
         {
-            var result = await Mediator.Send(new Create.Command { DiaryName = name, Body = body });
+            var result = await Mediator.Send(new Create.Command { DiaryName = jsonParams["name"].ToString(), Body = jsonParams["body"].AsObject() });
             return HandleResult(result);
         }
 

@@ -1,8 +1,10 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using API.Core;
+using API.Extensions;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.DependencyInjection;
@@ -54,13 +56,13 @@ namespace anxietyDiary.Controllers
             }
             return BadRequest(result);
         }
-        protected ActionResult HandleResultDynamic<T>(Result<List<T>> result)
+        protected ActionResult HandleResultDynamic<T>(Result<PageList<T>> result)
         {
             if (result is null)
             {
                 return NotFound();
             }
-            if (result.isSuccess && result.Value is not null)
+            if (result.isSuccess && result.Value.Count != 0)
             {
                 var resultType = result.Value[0].GetType();
                 Type listType = typeof(List<>).MakeGenericType(new[] { resultType });
@@ -69,6 +71,10 @@ namespace anxietyDiary.Controllers
                 {
                     list.Add(el);
                 }
+                Response.AddPaginationHeader(result.Value.CurrentPage,
+                                             result.Value.PageSize,
+                                             result.Value.TotalCount,
+                                             result.Value.TotalPages);
                 return Ok(list);
             }
             if (result.isSuccess)

@@ -23,7 +23,7 @@ namespace Persistance.Lib
             {
                 CheckException(diaryClass, "description is null");
             }
-            var columns = description.NonArbitraryColumns.ToList();
+            var columns = description.NonArbitraryColumns.Cast<DiaryColumn>().ToList();
             var properties = diaryClass.GetProperties();
 
             var dict = new Dictionary<string, PropertyInfo> { };
@@ -40,24 +40,30 @@ namespace Persistance.Lib
                     dict[properyName.Name] = propery;
                 }
             }
-            foreach (var column in columns)
-            {
-                if (!dict.ContainsKey(column.ShortName))
-                {
-                    CheckException(diaryClass, $"not contains {column.ShortName}");
-                }
-                if (dict[column.ShortName].PropertyType
-                    != TypesOfValues[column.ValueType])
-                {
-                    CheckException(diaryClass, $"invalid type {column.ShortName}");
-                }
-            }
-            var ArbColumns = description.ArbitraryColumns.ToList();
+            checkColumns(diaryClass, columns, dict, TypesOfValues);
+            var ArbColumns = description.ArbitraryColumns.Cast<DiaryColumn>().ToList();
+            checkColumns(diaryClass, ArbColumns, dict, TypesOfListValues);
         }
 
         private static void CheckException(TypeInfo diaryClass, string message)
         {
             throw new Exception(message + $" in {diaryClass.Name}");
+        }
+
+        private static void checkColumns(TypeInfo diaryClass, List<DiaryColumn> columns, Dictionary<string, PropertyInfo> propertyDict, Dictionary<ColumnValueType, Type> TypesDict)
+        {
+            foreach (var column in columns)
+            {
+                if (!propertyDict.ContainsKey(column.ShortName))
+                {
+                    CheckException(diaryClass, $"not contains {column.ShortName}");
+                }
+                if (propertyDict[column.ShortName].PropertyType
+                    != TypesDict[column.ValueType])
+                {
+                    CheckException(diaryClass, $"invalid type {column.ShortName}");
+                }
+            }
         }
         private static readonly Dictionary<ColumnValueType, Type> TypesOfValues = new Dictionary<ColumnValueType, Type>{
         {
@@ -79,6 +85,20 @@ namespace Persistance.Lib
         {
             ColumnValueType.Date,
             typeof(System.DateTime)
+        }};
+
+        private static readonly Dictionary<ColumnValueType, Type> TypesOfListValues = new Dictionary<ColumnValueType, Type>{
+        {
+                ColumnValueType.String,
+                typeof(List<string>)
+        },
+        {
+            ColumnValueType.Int,
+            typeof(List<int>)
+        },
+        {
+            ColumnValueType.Bool,
+            typeof(List<bool>)
         }};
     }
 }

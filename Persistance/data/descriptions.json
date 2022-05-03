@@ -38,7 +38,7 @@
             },
             {
                 "ShortName":"column6",
-                "Name":"Что мне придется делать, чтобы избавиться от проблема",
+                "Name":"Что мне придется делать, чтобы избавиться от проблемы",
                 "ValueType":"String",
                 "isOptional":false
             },
@@ -172,7 +172,7 @@
                 "isOptional":false
             },
             {
-                "ShortName":"column6    ",
+                "ShortName":"column6",
                 "Name":"Эмоция, когда правило нарушается",
                 "ValueType":"String",
                 "isOptional":false

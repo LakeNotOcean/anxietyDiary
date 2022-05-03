@@ -36,6 +36,6 @@ namespace Domain.DiaryExpensions
 
     public class NonArbitraryColumn : DiaryColumn
     {
-
+        
     }
 }

@@ -10,6 +10,8 @@ using Domain.DiaryExpensions;
 using System.IO;
 using System.Text.Json;
 using System.Text.Json.Serialization;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 
 namespace Persistance
 {
@@ -91,6 +93,39 @@ namespace Persistance
                 if (!context.Descriptions.Any(d => d.ShortName == descr.ShortName))
                 {
                     await context.AddAsync(descr);
+                }
+                else
+                {
+                    var currentDescription = await context.Descriptions.Include(d => d.ArbitraryColumns)
+                        .Include(d => d.NonArbitraryColumns)
+                        .Where(d => d.ShortName == descr.ShortName)
+                        .SingleOrDefaultAsync();
+                    foreach (var currCol in currentDescription.ArbitraryColumns)
+                    {
+                        var col = descr.ArbitraryColumns.Where(c => c.ShortName == currCol.ShortName).SingleOrDefault();
+                        if (col is not null)
+                        {
+                            col.Id = currCol.Id;
+                            context.Entry(currCol).CurrentValues.SetValues(col);
+                        }
+                        else
+                        {
+                            context.Remove(currCol);
+                        }
+                    }
+                    foreach (var currCol in currentDescription.NonArbitraryColumns)
+                    {
+                        var col = descr.NonArbitraryColumns.Where(c => c.ShortName == currCol.ShortName).SingleOrDefault();
+                        if (col is not null)
+                        {
+                            col.Id = currCol.Id;
+                            context.Entry(currCol).CurrentValues.SetValues(col);
+                        }
+                        else
+                        {
+                            context.Remove(currCol);
+                        }
+                    }
                 }
             }
             await context.SaveChangesAsync();

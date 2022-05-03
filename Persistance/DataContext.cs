@@ -3,6 +3,9 @@ using Domain.User;
 using System;
 using Domain.DiaryExpensions;
 using Domain.Diaries;
+using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace Persistance
 {
@@ -27,6 +30,7 @@ namespace Persistance
         public DbSet<InitialDiary> InitialDiaries { get; set; }
         public DbSet<HumanBobyDiary> HumanBobyDiaries { get; set; }
         public DbSet<AcitvityDiary> AcitvityDiaries { get; set; }
+        public DbSet<WrongRulesDiary> WrongRulesDiaries { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -39,6 +43,12 @@ namespace Persistance
             modelBuilder.Entity<DiaryDescription>().Property(d => d.Type).HasConversion<int>();
 
             modelBuilder.Entity<DiaryColumn>().Property(d => d.ValueType).HasConversion<int>();
+
+            var splitStringConverter = new ValueConverter<List<string>, string>(
+                v => string.Join(";", v),
+                v => v.Split(new[] { ';' }).ToList());
+
+            modelBuilder.Entity<WrongRulesDiary>().Property(d => d.Column2).HasConversion(splitStringConverter);
 
         }
 
