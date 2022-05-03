@@ -27,7 +27,7 @@ namespace API.Controllers
 
 
         [Authorize(Roles = "Doctor, Administrator")]
-        [HttpGet("search/{str:string}")]
+        [HttpGet("search/{str}")]
         public async Task<ActionResult<List<UserInfoDTO>>> SearchUsers(string str)
         {
             var foundUsers = await _context.Users.Where(u => u.UserName.Contains(str) && u.isSearching).Include(u => u.Role).ToListAsync();
@@ -72,7 +72,7 @@ namespace API.Controllers
             return getUsersInfo(ref doctors);
         }
 
-        [HttpGet("remove/{name:str}/{isDoctor:bool}")]
+        [HttpGet("remove/{name}/{isDoctor:bool}")]
         public async Task<ActionResult> removeUserView(string name, bool isDoctor)
         {
             var userId = getCurrentUserId();

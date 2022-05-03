@@ -26,8 +26,7 @@ namespace API.Controllers
         {
         }
 
-        [HttpGet("request/{requesTtype:int}/{user:string?}")]
-
+        [HttpGet("request/{requesTtype:int}/{user?}")]
         public async Task<ActionResult> SendRequest(int requestType, string? userName)
         {
             if (!Enum.IsDefined(typeof(RequestsEnum), requestType))
@@ -100,7 +99,7 @@ namespace API.Controllers
         }
 
         [Authorize(Roles = "Administrator")]
-        [HttpGet("patients")]
+        [HttpGet("doctor")]
         public async Task<ActionResult<List<RequestDTO>>> RequestBecomeDoctor()
         {
             Expression<Func<UserRequest, bool>> whereClause = req =>

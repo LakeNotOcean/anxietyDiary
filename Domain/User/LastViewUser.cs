@@ -7,6 +7,7 @@ namespace Domain.User
     public class LastUserView
     {
         [Key]
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public string UserViewId { get; set; }
 
         [Required]

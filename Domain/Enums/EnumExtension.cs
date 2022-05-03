@@ -30,6 +30,26 @@ namespace Domain.Enums
             return attributes[type][field.Name]?.Description ?? "";
 
         }
+        public static T GetValueFromDescription<T>(string description) where T : Enum
+        {
+            var type = typeof(T);
+            if (!attributes.ContainsKey(type))
+            {
+                var fields = type.GetFields();
+                attributes[type] = new Dictionary<string, DescriptionAttribute>();
+                foreach (var f in fields)
+                {
+                    var attribute = (DescriptionAttribute)f.GetCustomAttribute(typeof(DescriptionAttribute), false);
+                    attributes[type][f.Name] = attribute;
+                }
+            }
+            foreach (var dict in attributes[type])
+            {
+                if (dict.Value.Description == description)
+                    return (T)Enum.Parse(type, dict.Key);
+            }
+            throw new ArgumentException("Not found.", nameof(description));
+        }
         private static Dictionary<Type, Dictionary<string, DescriptionAttribute>> attributes;
     }
 

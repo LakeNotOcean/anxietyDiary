@@ -12,11 +12,12 @@
 		  <PrivateAssets>all</PrivateAssets>
 		</PackageReference>
 		<PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="6.0.0" />
+		<PackageReference Include="Pomelo.EntityFrameworkCore.MySql.Json.Microsoft" Version="6.0.1" />
 		<PackageReference Include="Swashbuckle.AspNetCore" Version="6.3.0" />
+		<PackageReference Include="System.Text.Json" Version="6.0.3" />
 	</ItemGroup>
 	<ItemGroup>
 		<ProjectReference Include="..\Domain\Domain.csproj" />
 		<ProjectReference Include="..\Persistance\Persistance.csproj" />
-		<ProjectReference Include="..\Application\Application.csproj" />
 	</ItemGroup>
 </Project>

@@ -15,6 +15,8 @@ using API.Controllers.Extensions;
 using API.Extensions;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc.Authorization;
+using Api.Middleware;
+using Api.Extensions;
 
 namespace anxietyDiary
 {
@@ -36,6 +38,10 @@ namespace anxietyDiary
             {
                 var policy = new AuthorizationPolicyBuilder().RequireAuthenticatedUser().Build();
                 opt.Filters.Add(new AuthorizeFilter(policy));
+            })
+            .AddJsonOptions(opt =>
+            {
+                opt.JsonSerializerOptions.Converters.Add(new DateTimeConverter());
             });
             services.AddApplicationServices(_config);
             services.AddIdentityServices(_config);
@@ -44,6 +50,9 @@ namespace anxietyDiary
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
+
+            app.UseMiddleware<ExceptionMiddleware>();
+
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();

@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Persistance;
 
@@ -10,9 +11,10 @@ using Persistance;
 namespace Persistance.Migrations
 {
     [DbContext(typeof(DataContext))]
-    partial class DataContextModelSnapshot : ModelSnapshot
+    [Migration("20220429132202_InitialCommit")]
+    partial class InitialCommit
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -116,41 +118,6 @@ namespace Persistance.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("InitialDiary");
-                });
-
-            modelBuilder.Entity("Domain.Diaries.WrongRulesDiary", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    b.Property<string>("Column1")
-                        .HasColumnType("longtext");
-
-                    b.Property<string>("Column2")
-                        .HasColumnType("longtext");
-
-                    b.Property<string>("Column3")
-                        .HasColumnType("longtext");
-
-                    b.Property<string>("Column4")
-                        .HasColumnType("longtext");
-
-                    b.Property<string>("Column5")
-                        .HasColumnType("longtext");
-
-                    b.Property<string>("Column6")
-                        .HasColumnType("longtext");
-
-                    b.Property<string>("Column7")
-                        .HasColumnType("longtext");
-
-                    b.Property<DateTime>("Date")
-                        .HasColumnType("datetime(6)");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("wrong_rules_diary");
                 });
 
             modelBuilder.Entity("Domain.DiaryExpensions.ColumnPosition", b =>
