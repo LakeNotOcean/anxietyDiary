@@ -45,7 +45,7 @@ namespace API.Controllers
         [HttpPut]
         public async Task<IActionResult> EditRecord(string name, int id, JsonObject jsonBody)
         {
-            var result = await Mediator.Send(new Edit.Command { DiaryName = name, Id = 1, Body = jsonBody["body"].AsObject() });
+            var result = await Mediator.Send(new Edit.Command { DiaryName = name, Id = id, Body = jsonBody["body"].AsObject() });
             return HandleResult(result);
         }
 

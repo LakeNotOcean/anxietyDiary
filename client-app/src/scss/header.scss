@@ -1,0 +1,12 @@
+.ui.header.DiaryHeader{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-left: 30px;
+    color: white;
+    margin-top: 0px;
+}
+
+.ui.menu .item::before{
+    width: 0;
+}

@@ -1,0 +1,21 @@
+.ui.header.ColumnsNames{
+    color:red;
+}
+.ui.form.field > label{
+    font-size: large;
+    font-weight: bold;
+    padding-bottom: 10px;
+}
+
+.textarea{
+    border:solid;
+}
+
+
+.ui.form textarea{
+    border:solid;
+}
+
+.ui.form textarea:focus{
+    border-color: gold;
+}

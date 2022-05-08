@@ -30,6 +30,10 @@ namespace Api.CRUD
             public async Task<Result<Unit>> Handle(Command request, CancellationToken cancellationToken)
             {
                 var diaryProperty = _diaryService.getDiaryTypeByName(request.DiaryName);
+                if (diaryProperty is null)
+                {
+                    return Result<Unit>.Failure("diaryProperty not found");
+                }
 
                 var linqQuery = _context.GetType().GetProperty(diaryProperty.PropertyName).GetValue(_context) as IQueryable<BaseDiary>;
                 var entity = await linqQuery.AsTracking().Where(x => x.Id == request.Id).SingleOrDefaultAsync();

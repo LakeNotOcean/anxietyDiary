@@ -47,10 +47,10 @@ namespace Domain.User
         public string Description { set; get; }
 
         [InverseProperty("Patient")]
-        public virtual ICollection<LastUserView> Patients { get; set; }
+        public virtual ICollection<UserDoctor> Patients { get; set; }
 
         [InverseProperty("Doctor")]
-        public virtual ICollection<LastUserView> Doctors { set; get; }
+        public virtual ICollection<UserDoctor> Doctors { set; get; }
 
     }
 }

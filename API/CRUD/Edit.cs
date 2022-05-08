@@ -34,6 +34,10 @@ namespace Api.CRUD
             public async Task<Result<Unit>> Handle(Command request, CancellationToken cancellationToken)
             {
                 var diaryProperty = _diaryService.getDiaryTypeByName(request.DiaryName);
+                if (diaryProperty is null)
+                {
+                    return Result<Unit>.Failure("diaryProperty not found");
+                }
 
                 var record = (BaseDiary)request.Body.Deserialize(diaryProperty.PropertyTypeInfo);
                 var linqQuery = _context.GetType().GetProperty(diaryProperty.PropertyName).GetValue(_context) as IQueryable<BaseDiary>;
@@ -47,7 +51,7 @@ namespace Api.CRUD
 
                 entity = record;
                 entity.Id = request.Id;
-                entity.Date = System.DateTime.UtcNow;
+                entity.ChangeDate = DateTime.UtcNow;
 
                 _context.Entry(entity).State = EntityState.Modified;
 

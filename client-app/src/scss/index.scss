@@ -1,0 +1,53 @@
+@import 'table';
+@import 'constant';
+@import 'header';
+@import 'loader';
+
+
+@font-face {
+    font-family: Roboto;    
+    src: url("../assets/fonts/Roboto-Light.ttf");
+}
+
+
+body{
+    font-family: Roboto;
+    box-sizing: border-box;
+    margin: 0;
+    background-color:$MainbackgroundColor;
+    display: flex;
+    flex-direction: column;
+}  
+
+.App{
+    display: flex;
+    flex-direction: column;
+}
+
+.Content{
+    margin-top: 100px;
+    margin-left: 50px;
+    margin-right: 50px;
+}
+
+.Diary{
+    display: flex;
+    flex-direction: row;
+}
+
+.DiaryContent{
+    margin-right: 40px;
+    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+}
+
+.ColumsNames{
+    text-align: center;
+    text-decoration:solid;
+}
+
+.actions{
+    margin-top: 20px;
+    display: flex;
+    flex-direction: row-reverse;
+}
+

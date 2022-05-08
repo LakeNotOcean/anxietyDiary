@@ -75,7 +75,7 @@ namespace Persistance
         }
         public static async Task SeedDiaryData(DataContext context)
         {
-            string path = Path.GetDirectoryName(Assembly.GetEntryAssembly().Location) + "/data/categories.json";
+            string path = Path.GetDirectoryName(Assembly.GetEntryAssembly().Location) + "/categories.json";
             var Categories = readSeed<DiaryCategory>(path);
             foreach (var cat in Categories)
             {
@@ -86,8 +86,9 @@ namespace Persistance
             }
             var options = new JsonSerializerOptions();
             options.Converters.Add(new JsonStringEnumConverterWithAttributeSupport(null, false, false, false, true));
-            path = Path.GetDirectoryName(Assembly.GetEntryAssembly().Location) + "/data/descriptions.json";
+            path = Path.GetDirectoryName(Assembly.GetEntryAssembly().Location) + "/descriptions.json";
             var Descriptions = readSeed<DiaryDescription>(path, options);
+            var UserDoctors = await context.UserDoctors.ToListAsync();
             foreach (var descr in Descriptions)
             {
                 if (!context.Descriptions.Any(d => d.ShortName == descr.ShortName))
@@ -125,6 +126,19 @@ namespace Persistance
                         {
                             context.Remove(currCol);
                         }
+                    }
+                }
+                foreach (var userDoctor in UserDoctors)
+                {
+                    var diaryView = await context.UsersViews.Where(uv => uv.DiaryName == descr.ShortName
+                    && uv.UserDoctorId == userDoctor.Id).SingleAsync();
+                    if (diaryView is null)
+                    {
+                        await context.AddAsync(new LastUserView
+                        {
+                            DiaryName = descr.ShortName,
+                            UserDoctorId = userDoctor.Id
+                        });
                     }
                 }
             }

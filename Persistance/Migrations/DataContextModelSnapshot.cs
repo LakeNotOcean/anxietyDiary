@@ -25,6 +25,9 @@ namespace Persistance.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
+                    b.Property<DateTime>("ChangeDate")
+                        .HasColumnType("datetime(6)");
+
                     b.Property<DateTime>("Date")
                         .HasColumnType("datetime(6)");
 
@@ -50,6 +53,9 @@ namespace Persistance.Migrations
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
+
+                    b.Property<DateTime>("ChangeDate")
+                        .HasColumnType("datetime(6)");
 
                     b.Property<DateTime>("Date")
                         .HasColumnType("datetime(6)");
@@ -89,6 +95,9 @@ namespace Persistance.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
+                    b.Property<DateTime>("ChangeDate")
+                        .HasColumnType("datetime(6)");
+
                     b.Property<string>("Column1")
                         .HasColumnType("longtext");
 
@@ -123,6 +132,9 @@ namespace Persistance.Migrations
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
+
+                    b.Property<DateTime>("ChangeDate")
+                        .HasColumnType("datetime(6)");
 
                     b.Property<string>("Column1")
                         .HasColumnType("longtext");
@@ -259,32 +271,24 @@ namespace Persistance.Migrations
 
             modelBuilder.Entity("Domain.User.LastUserView", b =>
                 {
-                    b.Property<string>("UserViewId")
+                    b.Property<string>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("varchar(255)");
 
-                    b.Property<int>("DoctorId")
-                        .HasColumnType("int")
-                        .HasColumnOrder(1);
+                    b.Property<string>("DiaryName")
+                        .HasMaxLength(50)
+                        .HasColumnType("varchar(50)");
 
-                    b.Property<DateTime>("LastUpdateDate")
+                    b.Property<DateTime>("LastViewDate")
                         .ValueGeneratedOnAddOrUpdate()
                         .HasColumnType("datetime(6)")
                         .HasDefaultValue(new DateTime(1970, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc));
 
-                    b.Property<DateTime>("LastViewDate")
-                        .ValueGeneratedOnAddOrUpdate()
-                        .HasColumnType("datetime(6)");
-
-                    b.Property<int>("PatientId")
+                    b.Property<int>("UserDoctorId")
                         .HasColumnType("int")
-                        .HasColumnOrder(0);
+                        .HasColumnOrder(1);
 
-                    b.HasKey("UserViewId");
-
-                    b.HasIndex("DoctorId");
-
-                    b.HasIndex("PatientId");
+                    b.HasKey("Id");
 
                     b.ToTable("UsersViews");
                 });
@@ -397,6 +401,29 @@ namespace Persistance.Migrations
                     b.ToTable("Users");
                 });
 
+            modelBuilder.Entity("Domain.User.UserDoctor", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    b.Property<int>("DoctorId")
+                        .HasColumnType("int")
+                        .HasColumnOrder(1);
+
+                    b.Property<int>("PatientId")
+                        .HasColumnType("int")
+                        .HasColumnOrder(0);
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("DoctorId");
+
+                    b.HasIndex("PatientId");
+
+                    b.ToTable("UserDoctors");
+                });
+
             modelBuilder.Entity("Domain.User.UserRequest", b =>
                 {
                     b.Property<int>("Id")
@@ -468,7 +495,18 @@ namespace Persistance.Migrations
                     b.Navigation("Category");
                 });
 
-            modelBuilder.Entity("Domain.User.LastUserView", b =>
+            modelBuilder.Entity("Domain.User.User", b =>
+                {
+                    b.HasOne("Domain.User.Role", "Role")
+                        .WithMany()
+                        .HasForeignKey("RoleId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Role");
+                });
+
+            modelBuilder.Entity("Domain.User.UserDoctor", b =>
                 {
                     b.HasOne("Domain.User.User", "Doctor")
                         .WithMany("Doctors")
@@ -485,17 +523,6 @@ namespace Persistance.Migrations
                     b.Navigation("Doctor");
 
                     b.Navigation("Patient");
-                });
-
-            modelBuilder.Entity("Domain.User.User", b =>
-                {
-                    b.HasOne("Domain.User.Role", "Role")
-                        .WithMany()
-                        .HasForeignKey("RoleId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Role");
                 });
 
             modelBuilder.Entity("Domain.User.UserRequest", b =>

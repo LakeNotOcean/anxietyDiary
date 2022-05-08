@@ -4,6 +4,7 @@ using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
 using API.DTO;
+using API.Services;
 using Domain.Enums;
 using Domain.User;
 using Microsoft.AspNetCore.Authorization;
@@ -19,8 +20,10 @@ namespace API.Controllers
     public class UserController : ControllerBase
     {
         private readonly DataContext _context;
-        public UserController(DataContext context)
+        private readonly DiaryService _diaryService;
+        public UserController(DataContext context, DiaryService diaryService)
         {
+            _diaryService = diaryService;
             _context = context;
 
         }
@@ -45,7 +48,7 @@ namespace API.Controllers
         {
             var doctorId = getCurrentUserId();
             var patients = await _context.Users.Where(u =>
-                _context.UsersViews.Any(view => view.DoctorId == doctorId && view.PatientId == u.Id)).ToListAsync();
+                _context.UserDoctors.Any(view => view.DoctorId == doctorId && view.PatientId == u.Id)).ToListAsync();
             return getUsersInfo(ref patients);
         }
 
@@ -68,7 +71,7 @@ namespace API.Controllers
         {
             var patientId = getCurrentUserId();
             var doctors = await _context.Users.Where(u =>
-                _context.UsersViews.Any(view => view.DoctorId == u.Id && view.PatientId == patientId)).ToListAsync();
+                _context.UserDoctors.Any(view => view.DoctorId == u.Id && view.PatientId == patientId)).ToListAsync();
             return getUsersInfo(ref doctors);
         }
 
@@ -86,12 +89,15 @@ namespace API.Controllers
             int doctorId, patientId;
             doctorId = isDoctor ? targetUser.Id : user.Id;
             patientId = isDoctor ? user.Id : targetUser.Id;
-            var view = await _context.UsersViews.SingleOrDefaultAsync(view => view.DoctorId == doctorId && view.PatientId == patientId);
-            if (view is null)
+
+            var connect = await _context.UserDoctors.SingleOrDefaultAsync(view => view.DoctorId == doctorId && view.PatientId == patientId);
+            if (connect is null)
             {
                 return BadRequest("users are not connected");
             }
-            _context.Remove(view);
+            var views = await _context.UsersViews.Where(uv => uv.UserDoctorId == connect.Id).ToListAsync();
+            _context.RemoveRange(views);
+            _context.Remove(connect);
             try
             {
                 await _context.SaveChangesAsync();

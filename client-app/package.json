@@ -1,0 +1,59 @@
+{
+  "name": "client-app",
+  "version": "1.0.1",
+  "description": "Try to use with ASP.net",
+  "main": "index.js",
+  "scripts": {
+    "start": "semantic-ui-css-patch && cross-env NODE_ENV=development webpack server --config webpack.config.js --open",
+    "build": "semantic-ui-css-patch && cross-env NODE_ENV=production webpack --config webpack.config.js",
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "postinstall": "semantic-ui-css-patch"
+  },
+  "keywords": [
+    "js",
+    "ASP.net",
+    "React"
+  ],
+  "author": "Vlad Nevskiy",
+  "license": "ISC",
+  "devDependencies": {
+    "@babel/core": "^7.17.10",
+    "@babel/eslint-parser": "^7.17.0",
+    "@babel/plugin-proposal-class-properties": "^7.16.7",
+    "@babel/preset-env": "^7.17.10",
+    "@babel/preset-react": "^7.16.7",
+    "@babel/preset-typescript": "^7.16.7",
+    "@types/react": "^18.0.8",
+    "@types/react-dom": "^18.0.3",
+    "babel-loader": "^8.2.5",
+    "babel-plugin-module-resolver": "^4.1.0",
+    "clean-webpack-plugin": "^4.0.0",
+    "copy-webpack-plugin": "^10.2.4",
+    "css-loader": "^6.7.1",
+    "eslint-loader": "^4.0.2",
+    "eslint-webpack-plugin": "^3.1.1",
+    "file-loader": "^6.2.0",
+    "html-webpack-plugin": "^5.5.0",
+    "mini-css-extract-plugin": "^2.6.0",
+    "node-sass": "^7.0.1",
+    "sass": "^1.51.0",
+    "sass-loader": "^12.6.0",
+    "style-loader": "^3.3.1",
+    "terser-webpack-plugin": "^5.3.1",
+    "url-loader": "^4.1.1",
+    "webpack": "^5.72.0",
+    "webpack-cli": "^4.9.2",
+    "webpack-dev-server": "^4.8.1"
+  },
+  "browserslist": "> 0.25%, not dead",
+  "dependencies": {
+    "@babel/polyfill": "^7.12.1",
+    "@semantic-ui-react/css-patch": "^1.0.0",
+    "axios": "^0.27.2",
+    "react": "^17.0.2",
+    "react-dom": "^17.0.2",
+    "react-hot-loader": "^4.13.0",
+    "semantic-ui-css": "^2.4.1",
+    "semantic-ui-react": "^2.1.2"
+  }
+}

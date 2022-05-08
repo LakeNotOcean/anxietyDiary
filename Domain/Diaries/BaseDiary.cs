@@ -17,5 +17,8 @@ namespace Domain.Diaries
         [JsonPropertyName("DateTime")]
 
         public DateTime Date { get; set; }
+
+        [JsonPropertyName("ChangeDateTime")]
+        public DateTime ChangeDate { get; set; }
     }
 }
