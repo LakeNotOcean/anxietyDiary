@@ -10,6 +10,7 @@ import { useParams } from "react-router-dom";
 import { IDescription } from "../models/description";
 import { useStore } from "../stores/store";
 import { observer } from "mobx-react-lite";
+import recordsStore, { ILoading } from "../stores/recordsStore";
 
 interface Props {
   setActiveDiary: (diary: IDescription) => void;
@@ -25,10 +26,6 @@ export function Diary({ setActiveDiary }: Props): JSX.Element {
     undefined
   );
   const [editMode, setEditMode] = useState(false);
-  const [loading, setLoading] = useState({
-    isLoading: true,
-    message: "Загрузка записей...",
-  });
   const { name, dateString } = useParams<{
     name: string;
     dateString: string;
@@ -54,28 +51,24 @@ export function Diary({ setActiveDiary }: Props): JSX.Element {
   }
 
   function handleDeleteRecord(record: IDiary) {
-    setLoading({ isLoading: true, message: "Удаление записи..." });
     agent.records.delete(name, record.Id).then(() => {
       record.Id
         ? setRecords([...records.filter((r) => r.Id !== record.Id)])
         : {};
-      setLoading({ isLoading: false, message: "" });
+      recordsStore.closeForm();
       handleFormClose();
     });
   }
 
   function handleCreateOrEditRecord(record: IDiary) {
     if (record.Id) {
-      setLoading({ isLoading: true, message: "Изменение записи..." });
       const dto = {} as IUpdateRecord;
       dto.body = diarySerialize(record);
       agent.records.update(dto, name, record.Id).then(() => {
         setRecords([...records.filter((r) => r.Id !== record.Id), record]);
-        setLoading({ isLoading: false, message: "" });
         handleFormClose();
       });
     } else {
-      setLoading({ isLoading: true, message: "Добавление записи..." });
       const dto = {} as IPostRecord;
       dto.body = diarySerialize(record);
       dto.name = name;
@@ -84,20 +77,16 @@ export function Diary({ setActiveDiary }: Props): JSX.Element {
         record.Id = response;
         setRecords([...records, record]);
         handleFormClose();
-        setLoading({ isLoading: false, message: "" });
       });
     }
   }
 
   useEffect(() => {
-    agent.records.list(name, date, 1, 10).then((response) => {
-      setRecords(diaryDeserialize(response.data, descriptions.get(name)));
-      setLoading({ isLoading: false, message: "" });
-    });
-  }, []);
+    recordsStore.loadRecords();
+  }, [recordsStore]);
 
-  if (loading.isLoading) {
-    return <LoadingComponent content={loading.message} />;
+  if (recordsStore.loading.isLoading) {
+    return <LoadingComponent content={recordsStore.loading.message} />;
   }
 
   setActiveDiary(descriptions.get(name));

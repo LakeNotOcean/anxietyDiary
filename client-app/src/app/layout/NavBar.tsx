@@ -1,6 +1,7 @@
 import React, { ReactElement, useState } from "react";
 import { Button, Container, Header, Menu } from "semantic-ui-react";
 import "semantic-ui-css/semantic.min.css";
+import { NavLink } from "react-router-dom";
 
 interface Props {
   selectedDiary?: string;
@@ -23,7 +24,7 @@ export default function NavBar({ selectedDiary }: Props): JSX.Element {
           Healthy Mind Project
         </Menu.Item>
         <Menu.Item>
-          <Button positive content="Дневники" />
+          <Button positive content="Дневники" as={NavLink} to={"/diaries"} />
         </Menu.Item>
 
         {selectedDiary && (
