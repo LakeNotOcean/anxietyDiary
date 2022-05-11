@@ -7,7 +7,7 @@ interface Props {
 
 export default function LoadingComponent({ content = "Loading..." }: Props) {
   return (
-    <Dimmer active={true} blurring>
+    <Dimmer active={true}>
       {/* <Loader content={content} /> */}
       <div className="loader">
         <div className="outer"></div>

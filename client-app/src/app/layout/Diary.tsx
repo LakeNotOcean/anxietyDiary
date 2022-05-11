@@ -6,16 +6,20 @@ import DiaryDashBoard from "@src/features/dashboard/diaryDashboard";
 import agent from "../api/agent";
 import LoadingComponent from "./LoadingComponent";
 import diarySerialize from "@src/lib/DiarySerialize";
-import { ColumnEnum } from "../Enum/ColumnEnum";
+import { useParams } from "react-router-dom";
+import { IDescription } from "../models/description";
+import { useStore } from "../stores/store";
+import { observer } from "mobx-react-lite";
 
 interface Props {
-  name: string;
-  date: Date;
+  setActiveDiary: (diary: IDescription) => void;
 }
 
 let descriptions = CreateDescriptions();
 
-export function Diary({ name, date }: Props): JSX.Element {
+export function Diary({ setActiveDiary }: Props): JSX.Element {
+  const { recordsStore } = useStore();
+
   const [records, setRecords] = useState<IDiary[]>([]);
   const [selectedRecord, setSelectedRecord] = useState<IDiary | undefined>(
     undefined
@@ -25,8 +29,12 @@ export function Diary({ name, date }: Props): JSX.Element {
     isLoading: true,
     message: "Загрузка записей...",
   });
+  const { name, dateString } = useParams<{
+    name: string;
+    dateString: string;
+  }>();
 
-  const params = new URLSearchParams();
+  const date = new Date(parseInt(dateString));
 
   function handleCancelSelectedRecord() {
     setSelectedRecord(undefined);
@@ -71,6 +79,7 @@ export function Diary({ name, date }: Props): JSX.Element {
       const dto = {} as IPostRecord;
       dto.body = diarySerialize(record);
       dto.name = name;
+      console.log(dto);
       agent.records.create(dto).then((response) => {
         record.Id = response;
         setRecords([...records, record]);
@@ -82,7 +91,7 @@ export function Diary({ name, date }: Props): JSX.Element {
 
   useEffect(() => {
     agent.records.list(name, date, 1, 10).then((response) => {
-      setRecords(diaryDeserialize(response, descriptions.get(name)));
+      setRecords(diaryDeserialize(response.data, descriptions.get(name)));
       setLoading({ isLoading: false, message: "" });
     });
   }, []);
@@ -90,6 +99,8 @@ export function Diary({ name, date }: Props): JSX.Element {
   if (loading.isLoading) {
     return <LoadingComponent content={loading.message} />;
   }
+
+  setActiveDiary(descriptions.get(name));
 
   return (
     <DiaryDashBoard
@@ -107,4 +118,4 @@ export function Diary({ name, date }: Props): JSX.Element {
   );
 }
 
-export default Diary;
+export default observer(Diary);

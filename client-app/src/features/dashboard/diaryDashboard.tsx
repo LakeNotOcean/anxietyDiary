@@ -1,10 +1,10 @@
 import { IDescription } from "@src/app/models/description";
 import { IDiary } from "@src/app/models/diary";
-import MapToArray from "@src/lib/MapToArray";
 import React, { useState } from "react";
-import { Button, Table, TableBody, TableHeader } from "semantic-ui-react";
+import { Button } from "semantic-ui-react";
 import { getDescriptionColumnArray } from "@src/lib/CreateDescriptions";
 import DiaryForm from "../form/diaryForm";
+import DashBoardTemplate from "../templates/dashboards/dashboardTemplate";
 
 interface Props {
   description: IDescription;
@@ -31,42 +31,21 @@ export default function DiaryDashBoard({
 }: Props): JSX.Element {
   let descrArray = getDescriptionColumnArray(description.ShortName);
 
-  const tableHeader = descrArray.map((column) => (
-    <Table.HeaderCell>{column.Name}</Table.HeaderCell>
-  ));
-
-  const rows = records.map((record) => {
-    return (
-      <Table.Row
-        onClick={() => {
-          openForm(record.Id);
-        }}
-      >
-        {MapToArray(record.Columns).map((value, key) => {
-          return <Table.Cell>{value}</Table.Cell>;
-        })}
-      </Table.Row>
-    );
-  });
-
   console.log("diaryDashBoard render is started");
   return (
     <div className="Diary">
       <div className="DiaryContent">
-        {/*
-            // @ts-ignore */}
-        <Table celled selectable color={"violet"}>
-          <TableHeader className="ColumnsNames">
-            <Table.Row>{tableHeader}</Table.Row>
-          </TableHeader>
-
-          <TableBody>{rows}</TableBody>
-        </Table>
+        <DashBoardTemplate
+          description={description}
+          records={records}
+          openForm={openForm}
+        />
       </div>
       <Button
         positive
         content="Добавить запись"
         onClick={() => openForm()}
+        size={"medium"}
       ></Button>
       {editMode && (
         <DiaryForm

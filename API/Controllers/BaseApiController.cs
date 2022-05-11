@@ -78,9 +78,9 @@ namespace anxietyDiary.Controllers
                                              result.Value.TotalPages);
                 return Ok(list);
             }
-            if (result.isSuccess)
+            else if (result.Value.Count == 0)
             {
-                return NotFound();
+                return Ok();
             }
             return BadRequest(result);
         }

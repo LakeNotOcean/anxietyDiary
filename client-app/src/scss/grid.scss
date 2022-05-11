@@ -1,0 +1,21 @@
+@import 'constant';
+
+.grid-list{
+    background-color:$MainFormColor;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    grid-auto-rows: minmax(20px, auto);
+    grid-gap: 1rem;
+    padding:30px;
+}
+
+.grid-element{
+    display: contents;
+}
+
+.grid-element > .ui.segment{
+    border:solid;
+    border-color: black;
+    text-align: left;
+    color: black;
+}

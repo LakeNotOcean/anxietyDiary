@@ -7,15 +7,22 @@
     padding-bottom: 10px;
 }
 
-.textarea{
-    border:solid;
-}
-
 
 .ui.form textarea{
     border:solid;
+    height: 65px;
+}
+
+.ui.input{
+    border:solid;
+    width: 100%;
+    
 }
 
 .ui.form textarea:focus{
     border-color: gold;
+}
+
+.date.field{
+    display: grid;
 }

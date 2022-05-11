@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
 using API.Core;
@@ -31,7 +32,6 @@ namespace Api.CRUD
             {
                 _diaryService = diaryService;
                 _context = context;
-
             }
 
             public async Task<Result<PageList<BaseDiary>>> Handle(Query request, CancellationToken cancellationToken)

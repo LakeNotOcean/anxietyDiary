@@ -5,11 +5,11 @@ using API.DTO;
 using API.Services;
 using Domain.Diaries;
 using MediatR;
-using Microsoft.EntityFrameworkCore;
 using Persistance;
 using System.Linq;
 using API.Core;
 using System.Text.Json.Nodes;
+using Api.Extensions;
 
 namespace API.CRUD
 {
@@ -24,10 +24,14 @@ namespace API.CRUD
         {
             private readonly DataContext _context;
             private readonly DiaryService _diaryService;
+            private readonly JsonSerializerOptions _opt;
             public Handler(DataContext context, DiaryService diaryService)
             {
                 _diaryService = diaryService;
                 _context = context;
+                _opt = new JsonSerializerOptions();
+                _opt.Converters.Add(new DateTimeConverter());
+
             }
 
             public async Task<Result<int>> Handle(Command request, CancellationToken cancellationToken)
@@ -38,7 +42,7 @@ namespace API.CRUD
                     return Result<int>.Failure("diaryProperty not found");
                 }
 
-                var record = (BaseDiary)request.Body.Deserialize(diaryProperty.PropertyTypeInfo);
+                var record = (BaseDiary)request.Body.Deserialize(diaryProperty.PropertyTypeInfo, _opt);
                 record.Date = System.DateTime.UtcNow;
                 record.ChangeDate = System.DateTime.UtcNow;
                 await _context.AddAsync(record);

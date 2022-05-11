@@ -1,4 +1,4 @@
-import { ColumnTypeEnum } from "../Enum/ColumnEnum";
+import { ColumnTypeEnum } from "../enums/ColumnEnum";
 
 export interface IColumn {
   ShortName: string;

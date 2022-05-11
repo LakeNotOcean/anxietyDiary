@@ -6,7 +6,7 @@ export default function diarySerialize(record: IDiary): JSON {
     if (Array.isArray(value)) {
       body[key] = value;
     } else {
-      body[key] = JSON.stringify(value);
+      body[key] = value;
     }
   });
   return body;

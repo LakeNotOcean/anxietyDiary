@@ -1,4 +1,4 @@
-import { ColumnTypeEnum } from "@src/app/Enum/ColumnEnum";
+import { ColumnTypeEnum } from "@src/app/enums/ColumnEnum";
 import { IDiary } from "@src/app/models/diary";
 import { getDescriptionColumnArray } from "./CreateDescriptions";
 

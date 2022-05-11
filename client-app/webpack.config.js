@@ -66,6 +66,7 @@ module.exports = {
   output: {
     filename: fileName("js"),
     path: path.resolve(__dirname, "dist"),
+    publicPath: "/",
   },
 
   resolve: {
@@ -82,6 +83,7 @@ module.exports = {
   devServer: {
     port: 3000,
     hot: isDev,
+    historyApiFallback: true,
   },
 
   plugins: [
@@ -166,7 +168,7 @@ module.exports = {
           {
             loader: "babel-loader",
             options: babelOptions(
-              "@babel/preset-react",
+              ["@babel/preset-react", { runtime: "automatic" }],
               "react-hot-loader/babel"
             ),
           },

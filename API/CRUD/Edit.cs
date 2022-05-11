@@ -4,6 +4,7 @@ using System.Text.Json;
 using System.Text.Json.Nodes;
 using System.Threading;
 using System.Threading.Tasks;
+using Api.Extensions;
 using API.Core;
 using API.Services;
 using Domain.Diaries;
@@ -25,10 +26,13 @@ namespace Api.CRUD
         {
             private readonly DataContext _context;
             private readonly DiaryService _diaryService;
+            private readonly JsonSerializerOptions _opt;
             public Handler(DataContext context, DiaryService diaryService)
             {
                 _diaryService = diaryService;
                 _context = context;
+                _opt = new JsonSerializerOptions();
+                _opt.Converters.Add(new DateTimeConverter());
             }
 
             public async Task<Result<Unit>> Handle(Command request, CancellationToken cancellationToken)
@@ -39,7 +43,7 @@ namespace Api.CRUD
                     return Result<Unit>.Failure("diaryProperty not found");
                 }
 
-                var record = (BaseDiary)request.Body.Deserialize(diaryProperty.PropertyTypeInfo);
+                var record = (BaseDiary)request.Body.Deserialize(diaryProperty.PropertyTypeInfo, _opt);
                 var linqQuery = _context.GetType().GetProperty(diaryProperty.PropertyName).GetValue(_context) as IQueryable<BaseDiary>;
                 var entity = await linqQuery.AsNoTracking().Where(x => x.Id == request.Id).SingleOrDefaultAsync();
                 if (entity is null)

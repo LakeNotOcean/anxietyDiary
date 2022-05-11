@@ -1,4 +1,6 @@
-import axios, { Axios, AxiosResponse } from "axios";
+import axios, { Axios, AxiosError, AxiosResponse } from "axios";
+import { toast } from "react-toastify";
+import { PaginatedResult } from "../models/pagination";
 
 axios.defaults.baseURL = "http://localhost:5000/api";
 
@@ -10,14 +12,35 @@ const sleep = (delay: number) => {
   });
 };
 
-axios.interceptors.response.use(async (response) => {
-  try {
+axios.interceptors.response.use(
+  async (response) => {
     await sleep(2000);
+    const pagination = response.headers["pagination"];
+    if (pagination) {
+      response.data = new PaginatedResult(
+        response.data,
+        JSON.parse(pagination)
+      );
+      return response as AxiosResponse<PaginatedResult<any>>;
+    }
     return response;
-  } catch (error) {
-    return await Promise.reject(error);
+  },
+  (error: AxiosError) => {
+    const { data, status } = error.response!;
+    switch (status) {
+      case 400:
+        toast.error("bad request");
+        break;
+      case 401:
+        toast.error("unauthorised");
+      case 404:
+        toast.error("not found");
+      case 500:
+        toast.error("server error");
+    }
+    return Promise.reject(error);
   }
-});
+);
 
 const request = {
   get: <T>(url: string) => axios.get<T>(url).then(responseBody),
@@ -29,7 +52,7 @@ const request = {
 
 const records = {
   list: (name: string, date: Date, pagenumber: number, pagesize: number) =>
-    request.get<JSON[]>(
+    request.get<PaginatedResult<JSON[]>>(
       `/diary?name=${name}&date=${date.toISOString()}&pagenumber=${pagenumber}&pagesize=${pagesize}`
     ),
   create: (record: IPostRecord) => request.post<number>("/diary", record),

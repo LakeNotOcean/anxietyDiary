@@ -9,6 +9,7 @@ import React, {
 } from "react";
 import { createInitialDiary } from "@src/lib/initialDiary";
 import cloneDiary from "@src/lib/cloneDiary";
+import FormTemplate from "../templates/forms/formTemplate";
 
 interface Props {
   columns: Array<IColumn>;
@@ -31,19 +32,6 @@ export default function DiaryForm({
 
   const [record, setRecord] = useState(initialState);
 
-  var forms = columns.map((value) => {
-    return (
-      <Form.Field
-        control={TextArea}
-        label={value.Name}
-        placeholder={value.Name}
-        name={value.ShortName}
-        value={record.Columns.get(value.ShortName)}
-        onChange={handleInputChange}
-      />
-    );
-  });
-
   function handleInputChange(event: ChangeEvent<HTMLInputElement>) {
     const { name, value } = event.target;
     let res = structuredClone(record);
@@ -58,21 +46,31 @@ export default function DiaryForm({
     deleteRecord(record);
   }
 
+  var forms = columns.map((value) => {
+    return (
+      <Form.Field
+        control={TextArea}
+        label={value.Name}
+        placeholder={value.Name}
+        name={value.ShortName}
+        value={record.Columns.get(value.ShortName)}
+        onChange={handleInputChange}
+      />
+    );
+  });
+
   return (
     <Modal dimmer="blurring" open={true}>
       <Modal.Header text>Заполните форму</Modal.Header>
       <Modal.Content>
         <div className="diary-form">
           <div className="diary-input">
-            {/*
-                    // @ts-ignore */}
-            <Segment clearing>
-              {/*
-                    // @ts-ignore */}
-              <Form onSubmit={handleSubmit} autoComplete="off">
-                {forms}
-              </Form>
-            </Segment>
+            <FormTemplate
+              diaryName={diaryName}
+              columns={columns}
+              record={record}
+              handleInputChange={handleInputChange}
+            />
           </div>
           <Modal.Actions>
             <Button
