@@ -80,7 +80,8 @@ namespace anxietyDiary.Controllers
             }
             else if (result.Value.Count == 0)
             {
-                return Ok();
+                Response.AddPaginationHeader(1, 1, 0, 1);
+                return Ok(new List<object>());
             }
             return BadRequest(result);
         }

@@ -1,62 +1,79 @@
-import { IDescription } from "@src/app/models/description";
-import { IDiary } from "@src/app/models/diary";
-import React, { useState } from "react";
-import { Button } from "semantic-ui-react";
+import React, { useEffect, useState } from "react";
+import { Button, Pagination, PaginationProps } from "semantic-ui-react";
 import { getDescriptionColumnArray } from "@src/lib/CreateDescriptions";
 import DiaryForm from "../form/diaryForm";
 import DashBoardTemplate from "../templates/dashboards/dashboardTemplate";
+import { useStore } from "@src/app/stores/store";
+import { observer } from "mobx-react-lite";
+import { PagingParams } from "@src/app/models/pagination";
+import LoadingComponent from "@src/app/layout/LoadingComponent";
 
-interface Props {
-  description: IDescription;
-  records: Array<IDiary>;
-  selectedRecord: IDiary | undefined;
-  selectRecord: (id: number) => void;
-  cancelSelectRecord: () => void;
-  closeForm: () => void;
-  editMode: boolean;
-  openForm: (id?: number) => void;
-  createOrEdit: (record: IDiary) => void;
-  deleteRecord: (record: IDiary) => void;
-}
+export default observer(function DiaryDashBoard(): JSX.Element {
+  const { recordsStore } = useStore();
+  const {
+    diaryDescription,
+    records,
+    openForm,
+    editMode,
+    setPagingParams,
+    pagination,
+    loadRecords,
+  } = recordsStore;
 
-export default function DiaryDashBoard({
-  description,
-  records,
-  selectedRecord,
-  openForm,
-  closeForm,
-  editMode,
-  createOrEdit,
-  deleteRecord,
-}: Props): JSX.Element {
-  let descrArray = getDescriptionColumnArray(description.ShortName);
+  const [loading, setLoading] = useState(false);
 
-  console.log("diaryDashBoard render is started");
+  function handleLoadPage(
+    event: React.MouseEvent<HTMLAnchorElement, MouseEvent>,
+    data: PaginationProps
+  ) {
+    setLoading(true);
+    setPagingParams(
+      new PagingParams(+data.activePage, diaryDescription.ShortName)
+    );
+    loadRecords().then(() => setLoading(false));
+  }
+
+  let descrArray = getDescriptionColumnArray(diaryDescription.ShortName);
+
+  if (loading) {
+    return <LoadingComponent content={"Загрузка записей..."} />;
+  }
+
   return (
-    <div className="Diary">
-      <div className="DiaryContent">
-        <DashBoardTemplate
-          description={description}
-          records={records}
-          openForm={openForm}
-        />
+    <>
+      <div className="Diary">
+        <div className="DiaryContent">
+          <DashBoardTemplate
+            description={diaryDescription}
+            records={records}
+            openForm={openForm}
+          />
+        </div>
+        <Button
+          positive
+          content="Добавить запись"
+          onClick={() => openForm()}
+          size={"medium"}
+        ></Button>
+
+        {editMode && (
+          <DiaryForm
+            columns={descrArray}
+            diaryName={diaryDescription.ShortName}
+          />
+        )}
       </div>
-      <Button
-        positive
-        content="Добавить запись"
-        onClick={() => openForm()}
-        size={"medium"}
-      ></Button>
-      {editMode && (
-        <DiaryForm
-          closeForm={closeForm}
-          selectedRecord={selectedRecord}
-          columns={descrArray}
-          diaryName={description.ShortName}
-          createOrEdit={createOrEdit}
-          deleteRecord={deleteRecord}
-        />
-      )}
-    </div>
+      <div className="pagination">
+        {pagination && (
+          <Pagination
+            activePage={pagination.currentPage}
+            boundaryRange={1}
+            onPageChange={handleLoadPage}
+            siblingRange={1}
+            totalPages={pagination.totalPages}
+          />
+        )}
+      </div>
+    </>
   );
-}
+});

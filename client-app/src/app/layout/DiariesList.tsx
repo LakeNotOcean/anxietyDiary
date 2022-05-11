@@ -10,7 +10,7 @@ export default function DiariesList() {
   getDescriptions.forEach((value, key) => {
     descriptionElements.push(
       //@ts-ignore
-      <div className="grid-element">
+      <div className="grid-element" key={key}>
         <Segment as={NavLink} to={`/diary/${value.ShortName}/${Date.now()}`}>
           {value.Name}
         </Segment>

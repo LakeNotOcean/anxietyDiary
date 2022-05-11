@@ -7,7 +7,7 @@ namespace Domain.Diaries
 {
     [Description("diary5")]
     [Table("emotions_diary")]
-    public class emotionsDiary : BaseDiary
+    public class EmotionsDiary : BaseDiary
     {
         [JsonPropertyNameAttribute("column1")]
         public DateTime Column1 { get; set; }
@@ -17,5 +17,8 @@ namespace Domain.Diaries
         public string Column3 { get; set; }
         [JsonPropertyNameAttribute("column4")]
         public string Column4 { get; set; }
+
+        [JsonPropertyNameAttribute("column5")]
+        public string Column5 { get; set; }
     }
 }

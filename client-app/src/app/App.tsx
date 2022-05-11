@@ -13,6 +13,7 @@ import {
   useRoutes,
 } from "react-router-dom";
 import DiariesList from "./layout/DiariesList";
+import { observer } from "mobx-react-lite";
 
 const descriptions = CreateDescriptions();
 
@@ -46,4 +47,4 @@ function App(): JSX.Element {
   );
 }
 
-export default App;
+export default observer(App);

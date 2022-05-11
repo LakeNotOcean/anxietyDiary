@@ -13,6 +13,7 @@ export default function InitialDiaryFormTemplate({
   var forms = columns.map((value) => {
     return (
       <Form.Field
+        key={value.ShortName}
         control={TextArea}
         label={value.Name}
         placeholder={value.Name}

@@ -16,9 +16,10 @@ axios.interceptors.response.use(
   async (response) => {
     await sleep(2000);
     const pagination = response.headers["pagination"];
+    console.log(response);
     if (pagination) {
       response.data = new PaginatedResult(
-        response.data,
+        response.data as JSON[],
         JSON.parse(pagination)
       );
       return response as AxiosResponse<PaginatedResult<any>>;
@@ -43,7 +44,8 @@ axios.interceptors.response.use(
 );
 
 const request = {
-  get: <T>(url: string) => axios.get<T>(url).then(responseBody),
+  get: <T>(url: string, params: URLSearchParams) =>
+    axios.get<T>(url, { params }).then(responseBody),
   post: <T>(url: string, body: {}) =>
     axios.post<T>(url, body).then(responseBody),
   put: <T>(url: string, body: {}) => axios.put<T>(url, body).then(responseBody),
@@ -51,10 +53,8 @@ const request = {
 };
 
 const records = {
-  list: (name: string, date: Date, pagenumber: number, pagesize: number) =>
-    request.get<PaginatedResult<JSON[]>>(
-      `/diary?name=${name}&date=${date.toISOString()}&pagenumber=${pagenumber}&pagesize=${pagesize}`
-    ),
+  list: (params: URLSearchParams) =>
+    request.get<PaginatedResult<JSON[]>>("/diary", params),
   create: (record: IPostRecord) => request.post<number>("/diary", record),
   update: (record: IUpdateRecord, name: string, id: number) =>
     request.put<void>(`/diary?name=${name}&id=${id}`, record),

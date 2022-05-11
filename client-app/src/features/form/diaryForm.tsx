@@ -1,5 +1,4 @@
 import { IColumn } from "@src/app/models/column";
-import { IDiary } from "@src/app/models/diary";
 import { Button, Form, Modal, Segment, TextArea } from "semantic-ui-react";
 import React, {
   ChangeEvent,
@@ -8,26 +7,23 @@ import React, {
   useState,
 } from "react";
 import { createInitialDiary } from "@src/lib/initialDiary";
-import cloneDiary from "@src/lib/cloneDiary";
 import FormTemplate from "../templates/forms/formTemplate";
+import { useStore } from "@src/app/stores/store";
+import { observer } from "mobx-react-lite";
 
 interface Props {
   columns: Array<IColumn>;
-  selectedRecord: IDiary | undefined;
-  closeForm: () => void;
   diaryName: string;
-  createOrEdit: (record: IDiary) => void;
-  deleteRecord: (record: IDiary) => void;
 }
 
-export default function DiaryForm({
+export default observer(function DiaryForm({
   columns,
-  selectedRecord,
-  closeForm,
   diaryName,
-  createOrEdit,
-  deleteRecord,
 }: Props): JSX.Element {
+  const { recordsStore } = useStore();
+  const { selectedRecord, closeForm, createOrEditRecord, deleteRecord } =
+    recordsStore;
+
   const initialState = selectedRecord ?? createInitialDiary(diaryName);
 
   const [record, setRecord] = useState(initialState);
@@ -40,7 +36,7 @@ export default function DiaryForm({
   }
 
   function handleSubmit() {
-    createOrEdit(record);
+    createOrEditRecord(record);
   }
   function handleDeleteRecord() {
     deleteRecord(record);
@@ -97,4 +93,4 @@ export default function DiaryForm({
       </Modal.Content>
     </Modal>
   );
-}
+});

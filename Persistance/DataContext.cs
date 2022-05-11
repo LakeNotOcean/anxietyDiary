@@ -32,7 +32,7 @@ namespace Persistance
         public DbSet<HumanBobyDiary> HumanBobyDiaries { get; set; }
         public DbSet<AcitvityDiary> AcitvityDiaries { get; set; }
         public DbSet<WrongRulesDiary> WrongRulesDiaries { get; set; }
-        public DbSet<emotionsDiary> EmotionsDiaries { get; set; }
+        public DbSet<EmotionsDiary> EmotionsDiaries { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

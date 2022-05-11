@@ -28,7 +28,6 @@ export function diaryDeserialize(
     });
     result.push(newRecord);
   }
-
   return result;
 }
 
@@ -36,7 +35,6 @@ function parseValueFromString(
   value: string,
   valueType: ColumnTypeEnum
 ): RecordValueType {
-  console.log("value: ", value, "type: ", typeof value);
   switch (valueType) {
     case ColumnTypeEnum.Bool:
       return (value === "true") as boolean;
