@@ -1,0 +1,24 @@
+.human-body-content
+{
+    position: relative;
+}
+
+.ui.table .human-body-content
+{
+    position: absolute;
+    height: 550px;
+    margin-left: 350px;
+}
+
+.HumanBodyText
+{
+    width: 200px;
+}
+
+.human-body-content >label{
+    font-size: large;
+    font-weight: bold;
+    padding-bottom: 10px;
+}
+
+

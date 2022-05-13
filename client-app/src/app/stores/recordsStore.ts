@@ -107,6 +107,7 @@ export default class RecordsStore {
       if (record.Id) {
         const dto = {} as IUpdateRecord;
         dto.body = diarySerialize(record);
+        console.log("dto: ", dto);
         await agent.records.update(
           dto,
           this.diaryDescription.ShortName,
@@ -118,6 +119,7 @@ export default class RecordsStore {
             record,
           ];
           this.closeForm();
+          this.setLoading(false);
         });
       } else {
         const dto = {} as IPostRecord;
@@ -126,7 +128,6 @@ export default class RecordsStore {
         let id = await agent.records.create(dto);
         runInAction(() => {
           record.Id = id;
-
           if (
             this.pagination.currentPage == this.pagination.totalPages &&
             this.pagination.itemsPerPage > this.records.length

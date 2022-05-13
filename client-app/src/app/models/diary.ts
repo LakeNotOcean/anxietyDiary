@@ -4,4 +4,4 @@ export interface IDiary {
   Columns: Map<string, RecordValueType | Array<RecordValueType>>;
 }
 
-export type RecordValueType = string | number | JSON | boolean | Date;
+export type RecordValueType = string | number | Object | boolean | Date;

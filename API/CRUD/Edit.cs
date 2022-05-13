@@ -52,7 +52,7 @@ namespace Api.CRUD
                 }
 
 
-
+                record.Date = entity.Date;
                 entity = record;
                 entity.Id = request.Id;
                 entity.ChangeDate = DateTime.UtcNow;

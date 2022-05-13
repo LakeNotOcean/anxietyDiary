@@ -23,10 +23,8 @@ namespace Domain.Diaries
         public string Emotions { get; set; }
         [JsonPropertyNameAttribute("column6")]
         public string Reactions { get; set; }
-        [JsonPropertyNameAttribute("column7")]
-        public string Situation { get; set; }
-        [JsonPropertyNameAttribute("column8")]
 
+        [JsonPropertyNameAttribute("column8")]
         [Column(TypeName = "json")]
         public JsonObject HumanBody { get; set; }
     }

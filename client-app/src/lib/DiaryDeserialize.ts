@@ -45,7 +45,7 @@ function parseValueFromString(
     case ColumnTypeEnum.Date:
       return new Date(value);
     case ColumnTypeEnum.Json:
-      return JSON.parse(value);
+      return value;
     default:
       return value;
   }

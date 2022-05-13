@@ -4,6 +4,7 @@ import InitialDiaryTemplate from "./initialDiaryTemplate";
 import { DiaryNameEnum } from "@src/app/enums/DiaryEnum";
 import React from "react";
 import EmotionsDiaryTemplate from "./emotionsDiaryTemplate";
+import HumanBodyDiaryTemplate from "./humanBodyDiaryTemplate";
 
 interface Props {
   description: IDescription;
@@ -35,6 +36,14 @@ export default function DashBoardTemplate({
     case DiaryNameEnum.EmotionsDiary:
       return (
         <EmotionsDiaryTemplate
+          description={description}
+          records={records}
+          openForm={openForm}
+        />
+      );
+    case DiaryNameEnum.HumanBodyDiary:
+      return (
+        <HumanBodyDiaryTemplate
           description={description}
           records={records}
           openForm={openForm}

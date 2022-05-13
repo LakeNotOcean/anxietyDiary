@@ -43,7 +43,8 @@ namespace Api.CRUD
                 }
 
                 var diary = _context.GetType().GetProperty(diaryInfo.PropertyName).GetValue(_context) as IQueryable<BaseDiary>;
-                var result = diary.Where(d => d.Date.Date == request.Date.Date).OrderBy(d => d.Date).AsQueryable();
+                var allRecords = await diary.ToListAsync();
+                var result = diary.Where(d => d.Date.Date == request.Date).OrderBy(d => d.Date).AsQueryable();
                 return Result<PageList<BaseDiary>>.Success(await PageList<BaseDiary>.CreateAsync(
                     result, request.Params.PageNumber, request.Params.PageSize));
             }

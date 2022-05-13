@@ -7,4 +7,5 @@ export enum DiaryTypeEnum {
 export enum DiaryNameEnum {
   IntialDiary = "diary1",
   EmotionsDiary = "diary5",
+  HumanBodyDiary = "diary2",
 }

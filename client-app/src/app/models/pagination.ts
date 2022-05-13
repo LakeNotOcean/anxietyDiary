@@ -38,5 +38,6 @@ export class PagingParams {
   readonly #DiariesPageSize: Map<string, number> = new Map([
     ["diary1", 1],
     ["diary5", 10],
+    ["diary2", 5],
   ]);
 }

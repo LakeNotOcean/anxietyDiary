@@ -94,16 +94,10 @@
                     "isOptional":false
                 },
                 {
-                    "ShortName":"column7",
-                    "Name":"Тригерная ситуация",
-                    "ValueType":"String",
-                    "isOptional":false
-                },
-                {
                     "ShortName":"column8",
-                    "Name":"HumanBody",
+                    "Name":"Физиологические реакции",
                     "ValueType":"Json",
-                    "isOptional":true
+                    "isOptional":false
                 }
         ]
     },
