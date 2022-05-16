@@ -1,6 +1,6 @@
 import { ColumnTypeEnum } from "@src/app/enums/ColumnEnum";
 import { HumanBodyEnum } from "@src/app/enums/HumanBodyEnum";
-import { ButtonState } from "@src/app/models/buttonState";
+import { BodyComponent } from "@src/app/models/BodyComponent";
 import useComponentVisible, {
   createInitialButtons,
 } from "@src/lib/componentVisible";
@@ -10,7 +10,6 @@ import { toJS } from "mobx";
 import moment from "moment";
 import React, { useEffect } from "react";
 import { useRef, useState } from "react";
-import { BodyComponent } from "reactjs-human-body";
 import {
   Button,
   ButtonProps,
@@ -45,14 +44,11 @@ export default function HumanBodyDiaryTemplate({
   ).ShortName;
 
   function handleOnclick(
-    event: React.MouseEvent<HTMLButtonElement, MouseEvent>,
     bodyPart: HumanBodyEnum,
     x: number,
     y: number,
     refId: number
   ) {
-    event.stopPropagation();
-
     const value = records[refId].Columns.get(HumanBodyColumn);
 
     value[bodyPart]["selected"] =
@@ -147,12 +143,7 @@ export default function HumanBodyDiaryTemplate({
             >
               <BodyComponent
                 partsInput={bodyValue as Object}
-                onClick={(
-                  event: React.MouseEvent<HTMLButtonElement, MouseEvent>,
-                  bodyPart: HumanBodyEnum,
-                  x: number,
-                  y: number
-                ) => handleOnclick(event, bodyPart, x, y, firstKey)}
+                onClick={handleOnclick}
               />
               {textShow !== undefined && (
                 <HumanBodyText

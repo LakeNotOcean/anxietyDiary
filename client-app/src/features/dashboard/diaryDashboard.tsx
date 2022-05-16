@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { Button, Pagination, PaginationProps } from "semantic-ui-react";
 import { getDescriptionColumnArray } from "@src/lib/CreateDescriptions";
 import DiaryForm from "../form/diaryForm";
@@ -7,6 +7,7 @@ import { useStore } from "@src/app/stores/store";
 import { observer } from "mobx-react-lite";
 import { PagingParams } from "@src/app/models/pagination";
 import LoadingComponent from "@src/app/layout/LoadingComponent";
+import Calendar from "react-awesome-calendar";
 
 export default observer(function DiaryDashBoard(): JSX.Element {
   const { recordsStore } = useStore();
@@ -49,6 +50,7 @@ export default observer(function DiaryDashBoard(): JSX.Element {
             openForm={openForm}
           />
         </div>
+        <Calendar />
         <Button
           positive
           content="Добавить запись"

@@ -25,7 +25,7 @@ function App(): JSX.Element {
     setActiveDiary(diary);
   }
   const routes = useRoutes([
-    { path: "/", element: <div>123</div> },
+    { path: "/", element: <div>HomePage</div> },
     {
       path: "/diary/:name/:dateString",
       element: <Diary setActiveDiary={handleSetActiveDiary} />,

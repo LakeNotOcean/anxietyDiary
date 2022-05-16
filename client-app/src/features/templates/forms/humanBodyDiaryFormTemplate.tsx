@@ -4,8 +4,8 @@ import { Form, Icon, Segment, TextArea } from "semantic-ui-react";
 import { FormProps } from "./formTemplate";
 import { TimeInput } from "semantic-ui-react-datetimeinput";
 import React, { ChangeEvent, useState, useRef } from "react";
-import { BodyComponent } from "reactjs-human-body";
 import { HumanBodyEnum } from "@src/app/enums/HumanBodyEnum";
+import { BodyComponent } from "@src/app/models/BodyComponent";
 
 export default function HumanBodyFormTemplate({
   columns,
@@ -26,19 +26,13 @@ export default function HumanBodyFormTemplate({
 
   const humanBodyParams = record.Columns.get(HumanBodyColumn) as Object;
 
-  function handleOnclick(
-    event: React.MouseEvent<HTMLButtonElement, MouseEvent>,
-    part: HumanBodyEnum,
-    x: number,
-    y: number
-  ) {
-    console.log(`part is ${part} with `, humanBodyParams);
+  function handleOnclick(part: HumanBodyEnum, x: number, y: number) {
     if (humanBodyParams[part]["selected"] == true) {
       humanBodyParams[part]["selected"] = false;
 
-      setBodypart(undefined);
       record.Columns.set(HumanBodyColumn, humanBodyParams);
       handleCustomInputChange(record);
+      setBodypart(undefined);
       setTextShow(undefined);
 
       return;
@@ -46,10 +40,10 @@ export default function HumanBodyFormTemplate({
       humanBodyParams[part]["selected"] = true;
       console.log(`${part} is now true`);
 
-      setBodypart(part);
-      setTextShow(humanBodyParams[part]["text"]);
       record.Columns.set(HumanBodyColumn, humanBodyParams);
       handleCustomInputChange(record);
+      setBodypart(part);
+      setTextShow(humanBodyParams[part]["text"]);
     }
 
     let parent = ref.current?.getBoundingClientRect();
@@ -72,6 +66,7 @@ export default function HumanBodyFormTemplate({
   }
 
   var forms = columns.map((value, key) => {
+    console.log("forms states", textShow, xCoord, yCoord);
     if (
       value.ValueType == ColumnTypeEnum.Date &&
       value.ShortName == "column1"
