@@ -1,6 +1,7 @@
 import { diaryDeserialize } from "@src/lib/DiaryDeserialize";
 import diarySerialize from "@src/lib/DiarySerialize";
 import { makeObservable, observable, observe, runInAction, toJS } from "mobx";
+import moment from "moment-timezone";
 import agent from "../api/agent";
 import { IDescription } from "../models/description";
 import { IDiary } from "../models/diary";
@@ -72,6 +73,7 @@ export default class RecordsStore {
     params.append("date", this.date.toISOString());
     params.append("pagenumber", this.pagingParams.pageNumber.toString());
     params.append("pagesize", this.pagingParams.pageSize.toString());
+    params.append("timezone", moment.tz.guess());
     return params;
   }
   setLoading = (isLoading: boolean, message = "") => {
@@ -127,6 +129,11 @@ export default class RecordsStore {
         dto.name = this.diaryDescription.ShortName;
         let id = await agent.records.create(dto);
         runInAction(() => {
+          if (this.pagination == null) {
+            this.loadRecords();
+            this.setLoading(false);
+            return;
+          }
           record.Id = id;
           if (
             this.pagination.currentPage == this.pagination.totalPages &&

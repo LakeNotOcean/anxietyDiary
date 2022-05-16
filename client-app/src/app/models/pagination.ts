@@ -1,3 +1,5 @@
+import { DiaryNameEnum } from "../enums/DiaryEnum";
+
 export interface Pagination {
   currentPage: number;
   itemsPerPage: number;
@@ -8,6 +10,7 @@ export interface Pagination {
 export class PaginatedResult<T> {
   data: T;
   pagination: Pagination;
+  timeZone: string;
 
   constructor(data: T, pagination: Pagination) {
     this.data = data;
@@ -36,8 +39,9 @@ export class PagingParams {
   #pageSize: number;
 
   readonly #DiariesPageSize: Map<string, number> = new Map([
-    ["diary1", 1],
-    ["diary5", 10],
-    ["diary2", 5],
+    [DiaryNameEnum.IntialDiary, 1],
+    [DiaryNameEnum.EmotionsDiary, 10],
+    [DiaryNameEnum.HumanBodyDiary, 5],
+    [DiaryNameEnum.WrongRulesDiary, 3],
   ]);
 }

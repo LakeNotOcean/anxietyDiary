@@ -6,9 +6,11 @@ export class ButtonState {
     this.#content = content;
   }
   get isActive() {
+    console.log("get isActive called");
     return this.#isActive;
   }
   set isActive(isActive: boolean) {
+    console.log("set isActive called");
     this.#isActive = isActive;
   }
   get content() {

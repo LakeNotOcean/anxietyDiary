@@ -35,10 +35,16 @@ export default function useComponentVisible(initialStates: ButtonState[]) {
       return value.clone();
     });
     setButtonStates(res);
-    console.log(res[key].content);
-
     event.stopPropagation();
   }
 
   return { buttonStates, setButtonStates, handleOnReactionClick };
+}
+
+export function createInitialButtons(len: number): ButtonState[] {
+  const res = new Array<ButtonState>(len);
+  for (let i = 0; i < len; ++i) {
+    res[i] = new ButtonState();
+  }
+  return res;
 }

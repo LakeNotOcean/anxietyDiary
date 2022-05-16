@@ -20,4 +20,18 @@ namespace Api.Extensions
             writer.WriteStringValue(value.ToUniversalTime().ToString(format));
         }
     }
+
+    public class TimeZoneConverter : JsonConverter<TimeZoneInfo>
+    {   
+        public override TimeZoneInfo Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
+        {
+            var timeZone = reader.GetString();
+            return TimeZoneInfo.FindSystemTimeZoneById(timeZone);
+        }
+
+        public override void Write(Utf8JsonWriter writer, TimeZoneInfo value, JsonSerializerOptions options)
+        {
+            writer.WriteStringValue(value.ToString());
+        }
+    }
 }

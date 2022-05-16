@@ -6,8 +6,6 @@ import { TimeInput } from "semantic-ui-react-datetimeinput";
 import React, { ChangeEvent, useState, useRef } from "react";
 import { BodyComponent } from "reactjs-human-body";
 import { HumanBodyEnum } from "@src/app/enums/HumanBodyEnum";
-import useComponentVisible from "@src/lib/componentVisible";
-import { toJS } from "mobx";
 
 export default function HumanBodyFormTemplate({
   columns,
@@ -19,6 +17,7 @@ export default function HumanBodyFormTemplate({
   const [bodyPart, setBodypart] = useState<string | undefined>(undefined);
   const [xCoord, setXCoord] = useState(0);
   const [yCoord, setYCoord] = useState(0);
+
   const ref = useRef<HTMLDivElement>(null);
 
   const HumanBodyColumn = columns.find(

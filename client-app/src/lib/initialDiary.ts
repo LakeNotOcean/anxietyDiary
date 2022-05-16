@@ -6,8 +6,13 @@ export function createInitialDiary(diaryName: string) {
   const description = getDescriptionColumnArray(diaryName);
   let columns = new Map<string, RecordValueType | Array<RecordValueType>>();
   description.forEach((column) => {
-    if (column.isOptional) {
-      columns.set(column.ShortName, new Array<RecordValueType>());
+    if (column.isArbitrary) {
+      columns.set(
+        column.ShortName,
+        new Array<RecordValueType>(1).fill(
+          getInitialValue(diaryName, column.ValueType, column.ShortName)
+        )
+      );
     } else {
       columns.set(
         column.ShortName,

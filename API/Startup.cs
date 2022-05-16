@@ -42,6 +42,7 @@ namespace anxietyDiary
             .AddJsonOptions(opt =>
             {
                 opt.JsonSerializerOptions.Converters.Add(new DateTimeConverter());
+                opt.JsonSerializerOptions.Converters.Add(new TimeZoneConverter());
             });
             services.AddApplicationServices(_config);
             services.AddIdentityServices(_config);

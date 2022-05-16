@@ -155,7 +155,7 @@
             },
             {
                 "ShortName":"column4",
-                "Name":"Поведение используемое для следования правилам",
+                "Name":"Используемое поведение",
                 "ValueType":"String",
                 "isOptional":false
             },

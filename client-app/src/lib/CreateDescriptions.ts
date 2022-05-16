@@ -30,7 +30,7 @@ export const CreateDescriptions = (): Map<string, IDescription> => {
         Name: column.Name,
         ValueType: column.ValueType,
         isOptional: column.isOptional,
-        isArbitrary: false,
+        isArbitrary: true,
       } as IColumn;
       diaryDescr.Columns.set(columnDescr.ShortName, columnDescr);
     });

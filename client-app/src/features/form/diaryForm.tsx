@@ -38,7 +38,6 @@ export default observer(function DiaryForm({
 
     const res = structuredClone(toJS(record));
     res.Columns.set(name, value);
-    console.log("result", res);
     setRecord(res);
   }
   function handleCustomInputChange(data: IDiary) {

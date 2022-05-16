@@ -21,6 +21,8 @@ namespace Api.CRUD
             public string DiaryName { get; set; }
             public DateTime Date { get; set; }
             public PagingParams Params { get; set; }
+
+            public TimeZoneInfo TimeZone { get; set; }
         }
 
         public class Handler : IRequestHandler<Query, Result<PageList<BaseDiary>>>
@@ -43,8 +45,11 @@ namespace Api.CRUD
                 }
 
                 var diary = _context.GetType().GetProperty(diaryInfo.PropertyName).GetValue(_context) as IQueryable<BaseDiary>;
-                var allRecords = await diary.ToListAsync();
-                var result = diary.Where(d => d.Date.Date == request.Date).OrderBy(d => d.Date).AsQueryable();
+
+                var utcBeginDateTime = request.Date.toBeginOfDayUtc(request.TimeZone);
+                var utcEndDateTime = request.Date.toEndOfDayUtc(request.TimeZone);
+
+                var result = diary.Where(d => d.Date >= utcBeginDateTime && d.Date <= utcEndDateTime).OrderBy(d => d.Date).AsQueryable();
                 return Result<PageList<BaseDiary>>.Success(await PageList<BaseDiary>.CreateAsync(
                     result, request.Params.PageNumber, request.Params.PageSize));
             }

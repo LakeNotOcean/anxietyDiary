@@ -5,6 +5,7 @@ import { ChangeEvent } from "react";
 import EmotionsDiaryFormTemplate from "./emotionsDiaryFormTemplate";
 import HumanBodyFormTemplate from "./humanBodyDiaryFormTemplate";
 import InitialDiaryFormTemplate from "./initialDiaryFormTemplate";
+import WrongRulesDiaryFormTemplate from "./wrongRulesDiaryFormTemplate";
 
 interface Props {
   columns: Array<IColumn>;
@@ -50,6 +51,15 @@ export default function FormTemplate({
     case DiaryNameEnum.HumanBodyDiary:
       return (
         <HumanBodyFormTemplate
+          columns={columns}
+          record={record}
+          handleInputChange={handleInputChange}
+          handleCustomInputChange={handleCustomInputChange}
+        />
+      );
+    case DiaryNameEnum.WrongRulesDiary:
+      return (
+        <WrongRulesDiaryFormTemplate
           columns={columns}
           record={record}
           handleInputChange={handleInputChange}

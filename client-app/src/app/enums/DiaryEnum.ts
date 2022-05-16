@@ -8,4 +8,5 @@ export enum DiaryNameEnum {
   IntialDiary = "diary1",
   EmotionsDiary = "diary5",
   HumanBodyDiary = "diary2",
+  WrongRulesDiary = "diary4",
 }

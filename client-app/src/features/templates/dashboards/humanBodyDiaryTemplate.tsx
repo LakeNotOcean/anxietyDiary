@@ -1,7 +1,9 @@
 import { ColumnTypeEnum } from "@src/app/enums/ColumnEnum";
 import { HumanBodyEnum } from "@src/app/enums/HumanBodyEnum";
 import { ButtonState } from "@src/app/models/buttonState";
-import useComponentVisible from "@src/lib/componentVisible";
+import useComponentVisible, {
+  createInitialButtons,
+} from "@src/lib/componentVisible";
 import { getDescriptionColumnArray } from "@src/lib/CreateDescriptions";
 import MapToArray, { MapToArrayKeys } from "@src/lib/MapToArray";
 import { toJS } from "mobx";
@@ -35,7 +37,7 @@ export default function HumanBodyDiaryTemplate({
 
   const refs = useRef(new Array<HTMLDivElement>(records.length));
   const { buttonStates, handleOnReactionClick } = useComponentVisible(
-    new Array(records.length).fill(new ButtonState())
+    createInitialButtons(records.length)
   );
 
   const HumanBodyColumn = MapToArray(description.Columns).find(

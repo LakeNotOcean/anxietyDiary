@@ -1,8 +1,4 @@
-import { IDescription } from "@src/app/models/description";
-import { IDiary, RecordValueType } from "@src/app/models/diary";
 import { getDescriptionColumnArray } from "@src/lib/CreateDescriptions";
-import MapToArray from "@src/lib/MapToArray";
-import { Segment, Table, TableBody, TableHeader } from "semantic-ui-react";
 import React, { useState } from "react";
 import { dashBoardProps } from "./dashboardTemplate";
 
