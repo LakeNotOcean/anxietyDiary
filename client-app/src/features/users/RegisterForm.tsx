@@ -1,8 +1,9 @@
 import { Form, Formik } from "formik";
+import { observer } from "mobx-react-lite";
 import { Button } from "semantic-ui-react";
 import UserTextInput from "./userFormInput";
 
-export default function RegisterForm() {
+export default observer(function RegisterForm() {
   return (
     <Formik
       initialValues={{
@@ -50,4 +51,4 @@ export default function RegisterForm() {
       )}
     </Formik>
   );
-}
+});

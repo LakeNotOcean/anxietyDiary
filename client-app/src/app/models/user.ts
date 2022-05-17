@@ -1,7 +1,10 @@
+import { UserRoleEnum } from "../enums/UserEnum";
+
 export interface UserInfo {
   userName: string;
   firstName: string;
   secondName: string;
+  role: UserRoleEnum;
   description: string;
 }
 

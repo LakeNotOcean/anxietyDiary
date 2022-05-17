@@ -12,7 +12,7 @@ export default function DiariesList() {
       //@ts-ignore
       <div className="grid-element" key={key}>
         <Segment as={NavLink} to={`/diary/${value.ShortName}/${Date.now()}`}>
-          {value.Name}
+          <p style={{ textOverflow: "ellipsis" }}>{value.Name}</p>
         </Segment>
       </div>
     );

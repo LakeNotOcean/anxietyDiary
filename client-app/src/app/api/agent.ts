@@ -2,7 +2,11 @@ import axios, { Axios, AxiosError, AxiosResponse } from "axios";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import { PaginatedResult } from "../models/pagination";
-import { User } from "../models/user";
+import {
+  User,
+  UserLoginFormValues,
+  UserRegisterFormValues,
+} from "../models/user";
 
 axios.defaults.baseURL = "http://localhost:5000/api";
 
@@ -69,13 +73,18 @@ const dates = {
   list: (params: URLSearchParams) => request.get<string[]>("/dates", params),
 };
 
-const Account = {
+const account = {
   current: () => request.get<User>("account/user"),
+  login: (user: UserLoginFormValues) =>
+    request.post<User>("/account/login", user),
+  register: (user: UserRegisterFormValues) =>
+    request.post<User>("/account/register", user),
 };
 
 const agent = {
   records,
   dates,
+  account,
 };
 
 export default agent;
