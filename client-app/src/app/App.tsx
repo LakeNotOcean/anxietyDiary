@@ -14,6 +14,8 @@ import {
 } from "react-router-dom";
 import DiariesList from "./layout/DiariesList";
 import { observer } from "mobx-react-lite";
+import NotFound from "@src/features/errors/NotFound";
+import RegisterForm from "@src/features/users/RegisterForm";
 
 const descriptions = CreateDescriptions();
 
@@ -33,6 +35,14 @@ function App(): JSX.Element {
     {
       path: "/diaries",
       element: <DiariesList />,
+    },
+    {
+      path: "/register",
+      element: <RegisterForm />,
+    },
+    {
+      path: "*",
+      element: <NotFound />,
     },
   ]);
 

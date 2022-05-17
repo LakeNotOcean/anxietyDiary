@@ -2,11 +2,18 @@ import React, { Fragment, useEffect, useRef, useState } from "react";
 import { CreateDescriptions } from "@src/lib/CreateDescriptions";
 import DiaryDashBoard from "@src/features/dashboard/diaryDashboard";
 import LoadingComponent from "./LoadingComponent";
-import { useParams } from "react-router-dom";
+import {
+  NavigateOptions,
+  useHref,
+  useLocation,
+  useNavigate,
+  useParams,
+} from "react-router-dom";
 import { IDescription } from "../models/description";
 import { useStore } from "../stores/store";
 import { observer } from "mobx-react-lite";
 import { PagingParams } from "../models/pagination";
+import { toJS } from "mobx";
 
 interface Props {
   setActiveDiary: (diary: IDescription) => void;
@@ -32,15 +39,26 @@ export function Diary({ setActiveDiary }: Props): JSX.Element {
     setActiveDiary(recordsStore.diaryDescription);
   }, []);
 
+  const navigate = useNavigate();
+
+  function onDateClick(date: Date) {
+    navigate(`/diary/${name}/${date.getTime()}`, { replace: true });
+    recordsStore.date = date;
+    recordsStore.loadRecords();
+    recordsStore.loadDates();
+  }
+  console.log("Diary is render");
+
   useEffect(() => {
     recordsStore.loadRecords();
+    recordsStore.loadDates();
   }, [recordsStore]);
 
   if (recordsStore.loading.isLoading) {
     return <LoadingComponent content={recordsStore.loading.message} />;
   }
 
-  return <DiaryDashBoard />;
+  return <DiaryDashBoard onDateClick={onDateClick} />;
 }
 
 export default observer(Diary);

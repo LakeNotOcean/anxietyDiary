@@ -7,6 +7,7 @@ import useComponentVisible, {
 } from "@src/lib/componentVisible";
 import { generateEdges, generateTextNodes } from "../flows/textNodeTempalte";
 import moment from "moment";
+import { useEffect } from "react";
 
 const nodeTypes = { nodeText: textNode };
 
@@ -15,13 +16,17 @@ export default function WrongRulesDiary({
   records,
   openForm,
 }: dashBoardProps) {
-  const { buttonStates, handleOnReactionClick } = useComponentVisible(
-    createInitialButtons(records.length)
-  );
+  const { buttonStates, setButtonStates, handleOnReactionClick } =
+    useComponentVisible(createInitialButtons(records.length));
+
+  useEffect(() => {
+    setButtonStates(createInitialButtons(records.length));
+  }, [records.length]);
 
   const rows = records.map((value, key) => {
     const nodes = generateTextNodes(value, description);
     const edges = generateEdges(value);
+    console.log("key is", key, buttonStates);
     return (
       <div className="flow-row">
         <div className="flow-row header" onClick={() => openForm(value.Id)}>

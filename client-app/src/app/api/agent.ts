@@ -1,6 +1,8 @@
 import axios, { Axios, AxiosError, AxiosResponse } from "axios";
+import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import { PaginatedResult } from "../models/pagination";
+import { User } from "../models/user";
 
 axios.defaults.baseURL = "http://localhost:5000/api";
 
@@ -35,7 +37,8 @@ axios.interceptors.response.use(
       case 401:
         toast.error("unauthorised");
       case 404:
-        toast.error("not found");
+        const navigate = useNavigate();
+        navigate("/not-found");
       case 500:
         toast.error("server error");
     }
@@ -44,7 +47,7 @@ axios.interceptors.response.use(
 );
 
 const request = {
-  get: <T>(url: string, params: URLSearchParams) =>
+  get: <T>(url: string, params?: URLSearchParams) =>
     axios.get<T>(url, { params }).then(responseBody),
   post: <T>(url: string, body: {}) =>
     axios.post<T>(url, body).then(responseBody),
@@ -62,8 +65,17 @@ const records = {
     request.delete<void>(`/diary?name=${name}&id=${id}`),
 };
 
+const dates = {
+  list: (params: URLSearchParams) => request.get<string[]>("/dates", params),
+};
+
+const Account = {
+  current: () => request.get<User>("account/user"),
+};
+
 const agent = {
   records,
+  dates,
 };
 
 export default agent;

@@ -1,3 +1,4 @@
+import datesFromString from "@src/lib/DatesFromString";
 import { diaryDeserialize } from "@src/lib/DiaryDeserialize";
 import diarySerialize from "@src/lib/DiarySerialize";
 import { makeObservable, observable, observe, runInAction, toJS } from "mobx";
@@ -21,6 +22,7 @@ export default class RecordsStore {
   loading = { isLoading: false, message: "" } as ILoading;
   pagination: Pagination | null = null;
   pagingParams: PagingParams | null;
+  dates: Date[] | null = null;
 
   constructor() {
     makeObservable(this, {
@@ -32,6 +34,7 @@ export default class RecordsStore {
       loading: observable,
       pagination: observable,
       pagingParams: observable,
+      dates: observable,
     });
   }
 
@@ -67,6 +70,28 @@ export default class RecordsStore {
     console.log(this.pagingParams.pageNumber, this.pagingParams.pageSize);
   };
 
+  loadDates = async () => {
+    runInAction(() => {
+      this.setLoading(true, "Загрузка записей...");
+    });
+    try {
+      const rawRes = await agent.dates.list(this.datesParams);
+      runInAction(() => {
+        const result = datesFromString(rawRes);
+        this.setDates(result);
+        this.setLoading(false);
+      });
+    } catch (error) {
+      console.log(error);
+      runInAction(() => {
+        this.setLoading(false);
+      });
+    }
+  };
+  setDates = (dates: Date[]) => {
+    this.dates = dates;
+  };
+
   get axiosParam() {
     const params = new URLSearchParams();
     params.append("name", this.diaryDescription.ShortName);
@@ -74,6 +99,11 @@ export default class RecordsStore {
     params.append("pagenumber", this.pagingParams.pageNumber.toString());
     params.append("pagesize", this.pagingParams.pageSize.toString());
     params.append("timezone", moment.tz.guess());
+    return params;
+  }
+  get datesParams() {
+    const params = new URLSearchParams();
+    params.append("name", this.diaryDescription.ShortName);
     return params;
   }
   setLoading = (isLoading: boolean, message = "") => {
