@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text.Json.Nodes;
 using System.Threading.Tasks;
 using API.Core;
 using API.Extensions;
@@ -77,9 +78,10 @@ namespace anxietyDiary.Controllers
                                              result.Value.TotalPages);
                 return Ok(list);
             }
-            if (result.isSuccess)
+            else if (result.Value.Count == 0)
             {
-                return NotFound();
+                Response.AddPaginationHeader(1, 1, 0, 1);
+                return Ok(new List<object>());
             }
             return BadRequest(result);
         }

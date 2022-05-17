@@ -1,0 +1,16 @@
+{
+    "parser": "@babel/eslint-parser",
+    "plugins": ["@typescript-eslint"],
+    "rules": {
+        "no-unused-vars": "warn",
+        "@typescript-eslint/ban-ts-ignore": "off"
+    },
+    "env": {
+        "es6": true,
+        "browser": true
+    },
+    "extends": [
+        "eslint:recommended",
+        "plugin:react/recommended"
+    ]
+}

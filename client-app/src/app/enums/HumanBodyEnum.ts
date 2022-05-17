@@ -1,0 +1,15 @@
+export enum HumanBodyEnum {
+  head = "head",
+  left_shoulder = "left_shoulder",
+  right_shoulder = "right_shoulder",
+  left_arm = "left_arm",
+  right_arm = "right_arm",
+  chest = "chest",
+  stomach = "stomach",
+  left_leg = "left_leg",
+  right_leg = "right_leg",
+  left_hand = "left_hand",
+  right_hand = "right_hand",
+  left_foot = "left_foot",
+  right_foot = "right_foot",
+}

@@ -14,8 +14,8 @@
 		<ProjectReference Include="..\Domain\Domain.csproj" />
 	</ItemGroup>
 	<ItemGroup>
-		<Content Include="data\*.*">
-    		<CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    	</Content>  
+		<None Include="..\data\*.*">
+    		<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    	</None>  
 	</ItemGroup>
 </Project>

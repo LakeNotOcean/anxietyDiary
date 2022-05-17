@@ -7,9 +7,7 @@ using anxietyDiary.Controllers;
 using Api.CRUD;
 using API.Core;
 using API.CRUD;
-using API.DTO;
 using Domain.Diaries;
-using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Persistance;
@@ -29,9 +27,19 @@ namespace API.Controllers
 
 
         [HttpGet]
-        public async Task<IActionResult> GetDayRecords(string name, DateTime date, [FromQuery] PagingParams param, CancellationToken ct)
+        public async Task<IActionResult> GetDayRecords(string name, DateTime date, [FromQuery] PagingParams param, string timezone, CancellationToken ct)
         {
-            var result = await Mediator.Send(new List.Query() { DiaryName = name, Date = date, Params = param });
+            TimeZoneInfo timeZone;
+            try
+            {
+                timeZone = TimeZoneInfo.FindSystemTimeZoneById(timezone);
+            }
+            catch (Exception)
+            {
+                return HandleResult<BaseDiary>(Result<BaseDiary>.Failure("timezone not found"));
+            }
+
+            var result = await Mediator.Send(new List.Query() { DiaryName = name, Date = date, Params = param, TimeZone = timeZone });
             return HandleResultDynamic<BaseDiary>(result);
         }
 
@@ -45,7 +53,7 @@ namespace API.Controllers
         [HttpPut]
         public async Task<IActionResult> EditRecord(string name, int id, JsonObject jsonBody)
         {
-            var result = await Mediator.Send(new Edit.Command { DiaryName = name, Id = 1, Body = jsonBody["body"].AsObject() });
+            var result = await Mediator.Send(new Edit.Command { DiaryName = name, Id = id, Body = jsonBody["body"].AsObject() });
             return HandleResult(result);
         }
 

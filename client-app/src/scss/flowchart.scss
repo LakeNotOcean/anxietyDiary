@@ -1,0 +1,111 @@
+@import 'constant';
+
+.react-flow__attribution
+{
+    opacity: 0;
+}
+
+
+.flow{
+    background: 
+    linear-gradient(90deg, $bg-color, ($dot-space - $dot-size), transparent 1%) center,
+		linear-gradient($bg-color, ($dot-space - $dot-size), transparent 1%) center,
+		$dot-color;
+	background-size: $dot-space $dot-space;
+   display: block;
+   min-width: 800px;
+    height: 500px;
+}  
+
+.text-node{
+    border-radius: 50%;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    height: fit-content;
+    width: fit-content; 
+    border: 10px solid purple ;
+    padding: 20px;
+    background: white;
+    border-radius: 10%;
+}
+
+.text-node.label{
+    padding: 0;
+    width: 210px;
+    height: 70px;
+    text-align: center;
+    justify-content: center;
+    border:none;
+    color: purple;
+    font-size: 28px;
+    text-decoration: solid;
+    font-weight: bolder;
+    margin-bottom: 20px;
+}
+
+.text-node.input{
+    padding: 0;
+    border:none;
+    width: 240px;
+    height: 100px;
+}
+
+.text-node.input >textarea{
+    width: 100%;
+    height: 100%;
+    font-size: 20px;
+    border:dashed 2px orange; 
+}
+
+.text-node.input > p{
+    text-align: center;
+    width: 100%;
+    height: 100%;
+    font-size: 25px;
+    font-weight: bold;
+    border:dashed 2px orange; 
+}
+
+.flow-row{
+    background: $MainFormColor;
+    justify-content: space-between;
+    padding: 10px 10px 10px 10px;
+}
+
+.flow-row.header{
+    display: flex;
+    background-color:aliceblue;
+    flex-direction: row;
+    align-items: center;
+}
+
+.flow-row.header:hover
+{
+    background-color:rgb(166, 202, 234);
+}
+.flow-row.header:hover .label
+{
+    background-color:rgb(166, 202, 234);
+}
+
+.flow-row.label{
+    text-decoration: solid;
+    font-weight: bolder;
+    background-color: aliceblue;
+}
+
+
+.flow-list{
+    min-width: 800px;
+}
+
+
+.text-node.controlls{
+    padding-bottom: 0;
+    border:none;
+    display: flex;
+    flex-direction: row;
+}
+

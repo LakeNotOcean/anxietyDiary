@@ -42,6 +42,7 @@ namespace anxietyDiary
             .AddJsonOptions(opt =>
             {
                 opt.JsonSerializerOptions.Converters.Add(new DateTimeConverter());
+                opt.JsonSerializerOptions.Converters.Add(new TimeZoneConverter());
             });
             services.AddApplicationServices(_config);
             services.AddIdentityServices(_config);
@@ -50,7 +51,7 @@ namespace anxietyDiary
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
-
+            app.UseCors("CorsPolicy");
             app.UseMiddleware<ExceptionMiddleware>();
 
             if (env.IsDevelopment())
@@ -61,9 +62,6 @@ namespace anxietyDiary
             }
 
             app.UseHttpsRedirection();
-
-
-            app.UseCors("CorsPolicy");
 
             app.UseAuthentication();
 

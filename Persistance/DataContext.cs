@@ -19,6 +19,7 @@ namespace Persistance
         public DbSet<Role> Roles { get; set; }
         public DbSet<User> Users { get; set; }
         public DbSet<LastUserView> UsersViews { get; set; }
+        public DbSet<UserDoctor> UserDoctors { get; set; }
 
         public DbSet<UserRequest> UsersRequests { get; set; }
 
@@ -31,6 +32,7 @@ namespace Persistance
         public DbSet<HumanBobyDiary> HumanBobyDiaries { get; set; }
         public DbSet<AcitvityDiary> AcitvityDiaries { get; set; }
         public DbSet<WrongRulesDiary> WrongRulesDiaries { get; set; }
+        public DbSet<EmotionsDiary> EmotionsDiaries { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -60,7 +62,7 @@ namespace Persistance
             modelBuilder.Entity<User>().Property(u => u.RoleId).HasConversion<int>();
             modelBuilder.Entity<User>().Property(u => u.LastRecordModify).HasDefaultValue(DateTime.UnixEpoch);
             modelBuilder.Entity<Role>().Property(role => role.Id).HasConversion<int>();
-            modelBuilder.Entity<LastUserView>().Property(v => v.LastUpdateDate).HasDefaultValue(DateTime.UnixEpoch);
+            modelBuilder.Entity<LastUserView>().Property(v => v.LastViewDate).HasDefaultValue(DateTime.UnixEpoch);
             modelBuilder.Entity<UserRequest>().Property(userRequest => userRequest.Request).HasConversion<int>();
         }
     }

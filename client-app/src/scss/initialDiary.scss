@@ -1,0 +1,23 @@
+@import 'constant';
+
+.initial-list{
+    background-color: $MainFormColor;
+    display: flex;
+    flex-direction: column;
+}
+
+.initial-list:hover{
+    background-color: rgb(198, 211, 211);
+}
+
+.initial-list-field{
+    margin: 20px;
+    border:solid;
+    border-color: black;
+    border-radius: .28571429rem;
+    padding:10px 10px 10px;
+}
+
+.initial-list-content{
+    margin-top: 20px;
+}

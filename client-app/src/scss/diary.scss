@@ -1,0 +1,57 @@
+@import 'constant';
+
+.Diary{
+    display: flex;
+    flex-direction: row;
+}
+
+.DiaryContent{
+    margin-right: 40px;
+    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+}
+
+.ColumsNames{
+    text-align: center;
+    text-decoration:solid;
+}
+
+.actions{
+    margin-top: 20px;
+    display: flex;
+    flex-direction: row-reverse;
+}   
+
+.ui.medium.button{
+    height: 50px;
+}
+
+.content-controller{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.content-controller .ui.medium.button{
+    margin-top: 20px;
+    width: 200px;
+}
+
+
+.calendar-day{
+    background-clip: content-box;
+    box-shadow: inset 0 0 0 5px $MainFormColor; 
+    padding:5px;
+}
+
+.current-day{
+    background-color: rgb(255, 217, 0);
+}
+
+.chosen-day{
+    background-color:rgb(58, 198, 126);
+
+}
+.record-day{
+
+    background-color: rgba(0, 85, 255, 0.755);
+}

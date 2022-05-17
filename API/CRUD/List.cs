@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
 using API.Core;
@@ -20,6 +21,8 @@ namespace Api.CRUD
             public string DiaryName { get; set; }
             public DateTime Date { get; set; }
             public PagingParams Params { get; set; }
+
+            public TimeZoneInfo TimeZone { get; set; }
         }
 
         public class Handler : IRequestHandler<Query, Result<PageList<BaseDiary>>>
@@ -31,15 +34,22 @@ namespace Api.CRUD
             {
                 _diaryService = diaryService;
                 _context = context;
-
             }
 
             public async Task<Result<PageList<BaseDiary>>> Handle(Query request, CancellationToken cancellationToken)
             {
                 var diaryInfo = _diaryService.getDiaryTypeByName(request.DiaryName);
+                if (diaryInfo is null)
+                {
+                    return Result<PageList<BaseDiary>>.Failure("diary not found");
+                }
 
                 var diary = _context.GetType().GetProperty(diaryInfo.PropertyName).GetValue(_context) as IQueryable<BaseDiary>;
-                var result = diary.Where(d => d.Date.Date == request.Date.Date).OrderBy(d => d.Date).AsQueryable();
+
+                var utcBeginDateTime = request.Date.toBeginOfDayUtc(request.TimeZone);
+                var utcEndDateTime = request.Date.toEndOfDayUtc(request.TimeZone);
+
+                var result = diary.Where(d => d.Date >= utcBeginDateTime && d.Date <= utcEndDateTime).OrderBy(d => d.Date).AsQueryable();
                 return Result<PageList<BaseDiary>>.Success(await PageList<BaseDiary>.CreateAsync(
                     result, request.Params.PageNumber, request.Params.PageSize));
             }

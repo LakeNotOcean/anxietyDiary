@@ -96,6 +96,17 @@ namespace Api.Controllers
         [HttpGet("user")]
         public async Task<ActionResult<UserDTO>> getCurrentUser()
         {
+            var userEmail = User.FindFirstValue(ClaimTypes.Email);
+            if (userEmail is null)
+            {
+                return new UserDTO
+                {
+                    Role = new RoleDTO
+                    {
+                        RoleName = RolesEnum.Guest.GetDescription()
+                    },
+                };
+            }
             var user = await _userManager.FindByEmailAsync(User.FindFirstValue(ClaimTypes.Email));
             user.Role = await _roleManager.FindByIdAsync(user.RoleId.ToString());
 

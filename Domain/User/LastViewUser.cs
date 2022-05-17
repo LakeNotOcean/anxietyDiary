@@ -1,6 +1,7 @@
 using System;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using Toolbelt.ComponentModel.DataAnnotations.Schema.V5;
 
 namespace Domain.User
 {
@@ -8,23 +9,18 @@ namespace Domain.User
     {
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        public string UserViewId { get; set; }
+        public string Id { get; set; }
+
+
+        [Column(TypeName = DatabaseConstants.standartStringType)]
+        [MaxLength(DatabaseConstants.standartStringLength)]
+        public string DiaryName { get; set; }
 
         [Required]
-        [ForeignKey(nameof(Patient)), Column(Order = 0)]
-        public int PatientId { get; set; }
-
-        [Required]
-        [ForeignKey(nameof(Doctor)), Column(Order = 1)]
-        public int DoctorId { get; set; }
-
-        public User Patient { get; set; }
-        public User Doctor { get; set; }
+        [ForeignKey("UserDoctor"), Column(Order = 1)]
+        public int UserDoctorId { get; set; }
 
         [DatabaseGenerated(DatabaseGeneratedOption.Computed)]
         public DateTime LastViewDate { get; set; }
-        [DatabaseGenerated(DatabaseGeneratedOption.Computed)]
-        public DateTime LastUpdateDate { get; set; }
-
     }
 }

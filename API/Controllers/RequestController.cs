@@ -6,6 +6,7 @@ using System.Security.Claims;
 using System.Threading.Tasks;
 using anxietyDiary.Controllers;
 using API.DTO;
+using API.Services;
 using Domain.Enums;
 using Domain.User;
 using Microsoft.AspNetCore.Authorization;
@@ -22,8 +23,10 @@ namespace API.Controllers
     public class RequestController : BaseApiController
     {
         //private readonly UserManager<User> _userManager;
-        public RequestController(DataContext context) : base(context)
+        private readonly DiaryService _diaryService;
+        public RequestController(DataContext context, DiaryService diaryService) : base(context)
         {
+            _diaryService = diaryService;
         }
 
         [HttpGet("request/{requesTtype:int}/{user?}")]
@@ -179,19 +182,28 @@ namespace API.Controllers
                     return;
             }
             int targetId = request.UserTargetId ?? 0;
-            LastUserView viewUser = new LastUserView { };
+            var userDoctor = new UserDoctor { };
             switch (request.Request)
             {
                 case RequestsEnum.ViewAsDoctor:
-                    viewUser.PatientId = targetId;
-                    viewUser.DoctorId = userSource!.Id;
+                    userDoctor.PatientId = targetId;
+                    userDoctor.DoctorId = userSource!.Id;
                     break;
                 case RequestsEnum.InviteDoctor:
-                    viewUser.PatientId = userSource!.Id;
-                    viewUser.DoctorId = targetId;
+                    userDoctor.PatientId = userSource!.Id;
+                    userDoctor.DoctorId = targetId;
                     break;
             }
-            await _context.AddAsync(viewUser);
+
+            await _context.AddAsync(userDoctor);
+            await _context.SaveChangesAsync();
+
+            var diaresNames = _diaryService.getDiariesNames();
+            foreach (var name in diaresNames)
+            {
+                await _context.AddAsync(new LastUserView { DiaryName = name, UserDoctorId = userDoctor.Id });
+            }
+            await _context.SaveChangesAsync();
         }
 
         private async Task<List<RequestDTO>> getRequests(Expression<Func<UserRequest, bool>> whereClause)
