@@ -1,5 +1,4 @@
 import axios, { Axios, AxiosError, AxiosResponse } from "axios";
-import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import { PaginatedResult } from "../models/pagination";
 import {
@@ -7,6 +6,8 @@ import {
   UserLoginFormValues,
   UserRegisterFormValues,
 } from "../models/user";
+import { store } from "../stores/store";
+import { history } from "@src/index";
 
 axios.defaults.baseURL = "http://localhost:5000/api";
 
@@ -40,15 +41,26 @@ axios.interceptors.response.use(
         break;
       case 401:
         toast.error("unauthorised");
+        break;
       case 404:
-        const navigate = useNavigate();
-        navigate("/not-found");
+        history.push("/not-found");
+        break;
       case 500:
         toast.error("server error");
+        break;
     }
-    return Promise.reject(error);
+    return Promise.reject(data);
   }
 );
+
+axios.interceptors.request.use((config) => {
+  const token = store.commonStore.token;
+  if (token) {
+    config.headers.Authorization = `Bearer ${token}`;
+    return config;
+  }
+  return config;
+});
 
 const request = {
   get: <T>(url: string, params?: URLSearchParams) =>

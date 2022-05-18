@@ -15,7 +15,7 @@ export default function UserTextInput(props: Props) {
       <label>{props.label}</label>
       <input {...field} {...props} />
       {meta.touched && meta.error ? (
-        <Label basic color="red">
+        <Label basic color="red" style={{ marginTop: "10px" }}>
           {meta.error}
         </Label>
       ) : null}

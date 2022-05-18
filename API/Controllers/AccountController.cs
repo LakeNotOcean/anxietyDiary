@@ -69,11 +69,13 @@ namespace Api.Controllers
         {
             if (await _userManager.Users.AnyAsync(user => user.Email == registerDto.Email))
             {
-                return BadRequest("Invalid email");
+                ModelState.AddModelError("email", "Неверный email");
+                return ValidationProblem();
             }
             if (await _userManager.Users.AnyAsync(user => user.UserName == registerDto.UserName))
             {
-                return BadRequest("Ivalid UserName");
+                ModelState.AddModelError("userName", "Неверное имя пользователя");
+                return ValidationProblem();
             }
             var user = new User
             {
