@@ -12,26 +12,32 @@ import NotFound from "@src/features/errors/NotFound";
 import { useStore } from "./stores/store";
 import LoadingComponent from "./layout/LoadingComponent";
 import ModalContainer from "./layout/ModalContainer";
+import LoginForm from "@src/features/users/LoginForm";
+import DiaryInfo from "./layout/DiaryInfo";
+import UserInfo from "@src/features/users/UserInfo";
 
 const descriptions = CreateDescriptions();
 
 function App(): JSX.Element {
   console.log("app is active");
   const [activeDiary, setActiveDiary] = useState<IDescription>(null);
-  const { commonStore, userStore } = useStore();
+  const { commonStore, userStore, modalStore } = useStore();
 
   useEffect(() => {
     if (commonStore.token) {
       commonStore.setAppLoaded(true);
-      userStore.getUser().finally(() => {
+      userStore.loadUser().finally(() => {
         commonStore.setAppLoaded(false);
       });
     } else {
       commonStore.setAppLoaded(false);
     }
-  }, [commonStore, userStore]);
+  }, [commonStore, userStore, modalStore]);
 
   if (commonStore.appLoaded) return <LoadingComponent content="Загрузка..." />;
+  if (userStore.isLoginForm) {
+    modalStore.openModal(<LoginForm />, "Войти на сайт");
+  }
 
   function handleSetActiveDiary(diary: IDescription) {
     setActiveDiary(diary);
@@ -50,13 +56,24 @@ function App(): JSX.Element {
       path: "*",
       element: <NotFound />,
     },
+    {
+      path: "/diaryinfo/:diaryName",
+      element: <DiaryInfo />,
+    },
+    {
+      path: "/account",
+      element: <UserInfo />,
+    },
   ]);
 
   return (
     <div className="App">
       <ModalContainer />
       <ToastContainer position="bottom-right" hideProgressBar />
-      <NavBar selectedDiary={activeDiary?.Name} />
+      <NavBar
+        diaryShortName={activeDiary?.ShortName}
+        fullDiaryName={activeDiary?.Name}
+      />
       <div className="Content">
         <Container>{routes}</Container>
       </div>

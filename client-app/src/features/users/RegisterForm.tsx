@@ -49,14 +49,14 @@ export default observer(function RegisterForm() {
     }
     if (
       values.firstName.length != 0 &&
-      !/(^\p{IsCyrillic}+$)|(^\p{IsBasicLatin}+$)/i.test(values.firstName)
+      !/(^[\u0400-\u04FF]+$)|(^[a-zA-Z]+$)/i.test(values.firstName)
     ) {
       errors.firstName =
         "Имя должно состоять только из латинских или кириллических букв";
     }
     if (
       values.secondName.length != 0 &&
-      !/(^\p{IsCyrillic}+$)|(^\p{IsBasicLatin}+$)/i.test(values.secondName)
+      !/(^[\u0400-\u04FF]+$)|(^[a-zA-Z]+$)/i.test(values.secondName)
     ) {
       errors.secondName =
         "Фамилия должна состоять только из латинских или кириллических букв";

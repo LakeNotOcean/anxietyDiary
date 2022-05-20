@@ -22,7 +22,7 @@ export default observer(function DiaryForm({
   columns,
   diaryName,
 }: Props): JSX.Element {
-  const { recordsStore } = useStore();
+  const { recordsStore, userStore } = useStore();
   const { selectedRecord, closeForm, createOrEditRecord, deleteRecord } =
     recordsStore;
 

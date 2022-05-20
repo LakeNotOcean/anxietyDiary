@@ -1,18 +1,29 @@
-import React, { ReactElement, useState } from "react";
-import { Button, Container, Header, Menu, Modal } from "semantic-ui-react";
+import React, { ReactElement, useEffect, useState } from "react";
+import {
+  Button,
+  Container,
+  Dropdown,
+  DropdownMenu,
+  Header,
+  Menu,
+  MenuItem,
+} from "semantic-ui-react";
 import "semantic-ui-css/semantic.min.css";
 import { NavLink } from "react-router-dom";
 import { observer } from "mobx-react-lite";
 import { useStore } from "../stores/store";
-import LoginForm from "@src/features/users/LoginForm";
-import RegisterForm from "@src/features/users/RegisterForm";
+import { toJS } from "mobx";
 
 interface Props {
-  selectedDiary?: string;
+  fullDiaryName?: string;
+  diaryShortName?: string;
 }
 
-export default observer(function NavBar({ selectedDiary }: Props): JSX.Element {
-  const { userStore, modalStore } = useStore();
+export default observer(function NavBar({
+  fullDiaryName,
+  diaryShortName,
+}: Props): JSX.Element {
+  const { userStore } = useStore();
 
   return (
     <Menu inverted fixed="top">
@@ -42,25 +53,41 @@ export default observer(function NavBar({ selectedDiary }: Props): JSX.Element {
               />
             </Menu.Item>
             <Menu.Item>
-              <Button primary content="Личный кабинет" />
+              <Dropdown text="Меню">
+                <DropdownMenu>
+                  <Dropdown.Item
+                    text="Личный кабинет"
+                    as={NavLink}
+                    to={"/account"}
+                  ></Dropdown.Item>
+                </DropdownMenu>
+              </Dropdown>
             </Menu.Item>
           </>
         )}
         {!userStore.isLoggedIn && (
           <Menu.Item>
             <Button
-              onClick={() =>
-                modalStore.openModal(<LoginForm />, "Войти на сайт")
-              }
+              onClick={() => userStore.setIsLoginForm(true)}
               primary
               content="Войти"
             />
           </Menu.Item>
         )}
+        {diaryShortName && (
+          <MenuItem>
+            <Button
+              positive
+              content="Подробнее"
+              as={NavLink}
+              to={`/diaryinfo/${diaryShortName}`}
+            />
+          </MenuItem>
+        )}
 
-        {selectedDiary && (
+        {fullDiaryName && (
           // @ts-ignore
-          <Header className="DiaryHeader">{selectedDiary}</Header>
+          <Header className="DiaryHeader">{fullDiaryName}</Header>
         )}
       </Container>
     </Menu>

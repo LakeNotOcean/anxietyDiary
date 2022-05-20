@@ -1,4 +1,4 @@
-import { makeObservable, observable, reaction } from "mobx";
+import { makeObservable, observable, reaction, runInAction } from "mobx";
 
 export default class CommonStore {
   token: string | null = window.localStorage.getItem("jwt");

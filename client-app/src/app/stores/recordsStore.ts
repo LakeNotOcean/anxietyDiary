@@ -1,12 +1,15 @@
+import LoginForm from "@src/features/users/LoginForm";
 import datesFromString from "@src/lib/DatesFromString";
 import { diaryDeserialize } from "@src/lib/DiaryDeserialize";
 import diarySerialize from "@src/lib/DiarySerialize";
 import { makeObservable, observable, observe, runInAction, toJS } from "mobx";
 import moment from "moment-timezone";
+import { toast } from "react-toastify";
 import agent from "../api/agent";
 import { IDescription } from "../models/description";
 import { IDiary } from "../models/diary";
 import { Pagination, PagingParams } from "../models/pagination";
+import { store } from "./store";
 
 export interface ILoading {
   isLoading: boolean;
@@ -39,6 +42,9 @@ export default class RecordsStore {
   }
 
   loadRecords = async () => {
+    if (!store.userStore.isLoggedIn) {
+      this.setLoginForm();
+    }
     runInAction(() => {
       this.setLoading(true, "Загрузка записей...");
     });
@@ -123,6 +129,10 @@ export default class RecordsStore {
   };
 
   openForm = (id?: number) => {
+    if (!store.userStore.isLoggedIn) {
+      toast.error("Для добавлении записи необходимо авторизироваться");
+      return;
+    }
     id ? this.selectRecord(id) : this.cancelSelectedRecord();
     this.editMode = true;
   };
@@ -132,8 +142,17 @@ export default class RecordsStore {
     this.editMode = false;
   };
 
+  setLoginForm = () => {
+    store.userStore.setIsLoginForm(true);
+  };
   createOrEditRecord = async (record: IDiary) => {
+    if (!store.userStore.isLoggedIn) {
+      this.setLoginForm();
+      return;
+    }
+
     console.log("Create or edit: ", record);
+
     this.setLoading(true, "Добавление записи...");
     try {
       if (record.Id) {
@@ -199,6 +218,11 @@ export default class RecordsStore {
   };
 
   deleteRecord = async (record: IDiary) => {
+    if (!store.userStore.isLoggedIn) {
+      this.setLoginForm();
+      return;
+    }
+
     this.setLoading(true, "Удаление записи...");
     try {
       await agent.records.delete(this.diaryDescription.ShortName, record.Id);

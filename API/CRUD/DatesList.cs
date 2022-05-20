@@ -6,7 +6,9 @@ using System.Threading.Tasks;
 using API.Core;
 using API.Services;
 using Domain.Diaries;
+using Domain.User;
 using MediatR;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Persistance;
 
@@ -18,14 +20,18 @@ namespace API.CRUD
         {
             public string DiaryName { get; set; }
 
+            public string UserName { get; set; }
+
         }
         public class Handler : IRequestHandler<Query, Result<List<DateTime>>>
         {
             private readonly DataContext _context;
             private readonly DiaryService _diaryService;
+            private readonly UserManager<User> _userManager;
 
-            public Handler(DataContext context, DiaryService diaryService)
+            public Handler(DataContext context, DiaryService diaryService, UserManager<User> userManager)
             {
+                _userManager = userManager;
                 _diaryService = diaryService;
                 _context = context;
             }
@@ -36,6 +42,12 @@ namespace API.CRUD
                 {
                     return Result<List<DateTime>>.Failure("diary not found");
                 }
+                var user = await _userManager.FindByNameAsync(request.UserName);
+                if (user is null)
+                {
+                    return Result<List<DateTime>>.Failure("User is not defined");
+                }
+
 
                 var diary = _context.GetType().GetProperty(diaryInfo.PropertyName).GetValue(_context) as IQueryable<BaseDiary>;
                 var result = await diary.Select(d => d.Date.Date).Distinct().ToListAsync();

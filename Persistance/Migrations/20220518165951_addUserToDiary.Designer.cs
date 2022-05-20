@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Persistance;
 
@@ -10,9 +11,10 @@ using Persistance;
 namespace Persistance.Migrations
 {
     [DbContext(typeof(DataContext))]
-    partial class DataContextModelSnapshot : ModelSnapshot
+    [Migration("20220518165951_addUserToDiary")]
+    partial class addUserToDiary
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -31,9 +33,6 @@ namespace Persistance.Migrations
                     b.Property<DateTime>("Date")
                         .HasColumnType("datetime(6)");
 
-                    b.Property<int>("DiaryUserId")
-                        .HasColumnType("int");
-
                     b.Property<int>("Perfomance")
                         .HasColumnType("int");
 
@@ -43,12 +42,15 @@ namespace Persistance.Migrations
                     b.Property<DateTime>("Time")
                         .HasColumnType("datetime(6)");
 
+                    b.Property<int>("UserId")
+                        .HasColumnType("int");
+
                     b.Property<string>("Work")
                         .HasColumnType("longtext");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("DiaryUserId");
+                    b.HasIndex("UserId");
 
                     b.ToTable("ActivityDiary");
                 });
@@ -80,12 +82,12 @@ namespace Persistance.Migrations
                     b.Property<DateTime>("Date")
                         .HasColumnType("datetime(6)");
 
-                    b.Property<int>("DiaryUserId")
+                    b.Property<int>("UserId")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("DiaryUserId");
+                    b.HasIndex("UserId");
 
                     b.ToTable("emotions_diary");
                 });
@@ -105,9 +107,6 @@ namespace Persistance.Migrations
                     b.Property<DateTime>("Day")
                         .HasColumnType("datetime(6)");
 
-                    b.Property<int>("DiaryUserId")
-                        .HasColumnType("int");
-
                     b.Property<string>("Emotions")
                         .HasColumnType("longtext");
 
@@ -126,9 +125,12 @@ namespace Persistance.Migrations
                     b.Property<string>("Trigger")
                         .HasColumnType("longtext");
 
+                    b.Property<int>("UserId")
+                        .HasColumnType("int");
+
                     b.HasKey("Id");
 
-                    b.HasIndex("DiaryUserId");
+                    b.HasIndex("UserId");
 
                     b.ToTable("HumanBodyDiary");
                 });
@@ -166,12 +168,12 @@ namespace Persistance.Migrations
                     b.Property<DateTime>("Date")
                         .HasColumnType("datetime(6)");
 
-                    b.Property<int>("DiaryUserId")
+                    b.Property<int>("UserId")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("DiaryUserId");
+                    b.HasIndex("UserId");
 
                     b.ToTable("InitialDiary");
                 });
@@ -209,12 +211,12 @@ namespace Persistance.Migrations
                     b.Property<DateTime>("Date")
                         .HasColumnType("datetime(6)");
 
-                    b.Property<int>("DiaryUserId")
+                    b.Property<int>("UserId")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("DiaryUserId");
+                    b.HasIndex("UserId");
 
                     b.ToTable("wrong_rules_diary");
                 });
@@ -531,7 +533,7 @@ namespace Persistance.Migrations
                 {
                     b.HasOne("Domain.User.User", "DiaryUser")
                         .WithMany()
-                        .HasForeignKey("DiaryUserId")
+                        .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -542,7 +544,7 @@ namespace Persistance.Migrations
                 {
                     b.HasOne("Domain.User.User", "DiaryUser")
                         .WithMany()
-                        .HasForeignKey("DiaryUserId")
+                        .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -553,7 +555,7 @@ namespace Persistance.Migrations
                 {
                     b.HasOne("Domain.User.User", "DiaryUser")
                         .WithMany()
-                        .HasForeignKey("DiaryUserId")
+                        .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -564,7 +566,7 @@ namespace Persistance.Migrations
                 {
                     b.HasOne("Domain.User.User", "DiaryUser")
                         .WithMany()
-                        .HasForeignKey("DiaryUserId")
+                        .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -575,7 +577,7 @@ namespace Persistance.Migrations
                 {
                     b.HasOne("Domain.User.User", "DiaryUser")
                         .WithMany()
-                        .HasForeignKey("DiaryUserId")
+                        .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 

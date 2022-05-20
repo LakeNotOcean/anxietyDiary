@@ -1,8 +1,8 @@
 using System;
-using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Text.Json.Serialization;
+using Domain.User;
 
 namespace Domain.Diaries
 {
@@ -20,5 +20,9 @@ namespace Domain.Diaries
 
         [JsonPropertyName("ChangeDateTime")]
         public DateTime ChangeDate { get; set; }
+
+        [Required]
+        [ForeignKey("User")]
+        public int DiaryUserId { get; set; }
     }
 }

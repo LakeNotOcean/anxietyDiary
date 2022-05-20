@@ -6,10 +6,10 @@ export interface UserInfo {
   secondName: string;
   role: UserRoleEnum;
   description: string;
+  isSearching: boolean;
 }
 
 export interface User extends UserInfo {
-  isSerching: string;
   token: string;
 }
 

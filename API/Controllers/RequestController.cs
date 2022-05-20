@@ -29,26 +29,27 @@ namespace API.Controllers
             _diaryService = diaryService;
         }
 
-        [HttpGet("request/{requesTtype:int}/{user?}")]
-        public async Task<ActionResult> SendRequest(int requestType, string? userName)
+        [HttpPost("request")]
+        public async Task<ActionResult> SendRequest(SendRequestDTO req)
         {
-            if (!Enum.IsDefined(typeof(RequestsEnum), requestType))
+            if (!Enum.IsDefined(typeof(RequestsEnum), req.requestType))
             {
                 BadRequest("wrong request type");
             }
-            var request = (RequestsEnum)requestType;
+            var request = (RequestsEnum)req.requestType;
             var userId = getCurrentUserId();
             var user = await _context.Users.Include(u => u.Role).SingleOrDefaultAsync(u => u.Id == userId);
 
             User? target = null;
-            if (userName is not null)
+            if (req.userName is not null)
             {
-                target = await _context.Users.Include(u => u.Role).SingleOrDefaultAsync(u => u.UserName == (string)userName);
+                target = await _context.Users.Include(u => u.Role)
+                .SingleOrDefaultAsync(u => u.UserName == (string)req.userName);
             }
 
             if (target == null && request != RequestsEnum.BecomeDoctor || (!target?.isSearching ?? false))
             {
-                BadRequest("wrong request type");
+                BadRequest("wrong request");
             }
 
             bool isPossible = false;
@@ -71,8 +72,8 @@ namespace API.Controllers
 
                 return BadRequest("No access");
             }
-            if (request == RequestsEnum.BecomeDoctor && !await isExists(userId, request) ||
-                !await isExists(userId, request, target?.Id ?? 0))
+            if ((request == RequestsEnum.BecomeDoctor && await isExists(userId, request)) ||
+                await isExists(userId, request, target?.Id ?? 0))
             {
                 return Conflict();
             }
@@ -110,7 +111,7 @@ namespace API.Controllers
             return await getRequests(whereClause);
         }
 
-        [HttpGet("cancel/{request:int}")]
+        [HttpDelete("cancel")]
         public async Task<ActionResult> RequestCancel(int requestId)
         {
             int userId = getCurrentUserId();
@@ -124,7 +125,7 @@ namespace API.Controllers
 
         }
 
-        [HttpGet("accept/{request:int}")]
+        [HttpGet("accept")]
         public async Task<ActionResult> RequestAccept(int requestId)
         {
             int userId = getCurrentUserId();
@@ -147,6 +148,14 @@ namespace API.Controllers
             return await saveContext();
         }
 
+        [HttpGet("user")]
+        public async Task<ActionResult<List<RequestDTO>>> getUserRequests()
+        {
+            int userId = getCurrentUserId();
+            Expression<Func<UserRequest, bool>> whereClause = r => r.UserSourceId == userId;
+            return await getRequests(whereClause);
+        }
+
         private int getCurrentUserId()
         {
             return int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier));
@@ -164,10 +173,22 @@ namespace API.Controllers
         {
             return new RequestDTO
             {
-                UserName = request.UserSource.UserName,
-                FirstName = request.UserSource.FirstName,
-                SecondName = request.UserSource.SecondName,
-                RequestId = request.Id
+                sourceUser = new UserInfoDTO
+                {
+                    userName = request.UserSource.UserName,
+                    firstName = request.UserSource.FirstName,
+                    secondName = request.UserSource.SecondName,
+                    description = request.UserSource.Description
+                },
+                targetUser = request.UserTarget is null ? null : new UserInfoDTO
+                {
+                    userName = request.UserTarget.UserName,
+                    firstName = request.UserTarget.FirstName,
+                    secondName = request.UserTarget.SecondName,
+                    description = request.UserTarget.Description
+                },
+                requestId = request.Id,
+                requestType = request.Request
             };
         }
 
