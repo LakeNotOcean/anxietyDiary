@@ -36,13 +36,16 @@ export default observer(function LoginForm() {
       }}
       onSubmit={(values, { setErrors, setSubmitting }) => {
         setSubmitting(true);
-        userStore.login(values).catch((error) => {
-          setErrors({
-            email: "Неверный email или пароль",
-            password: "Неверный email или пароль",
-          });
-        });
-        setSubmitting(false);
+        userStore
+          .login(values)
+          .catch((error) => {
+            console.log(error);
+            setErrors({
+              email: "Неверный email или пароль",
+              password: "Неверный email или пароль",
+            });
+          })
+          .finally(() => setSubmitting(false));
       }}
     >
       {({ handleSubmit, isSubmitting, dirty, isValid, errors }) => {

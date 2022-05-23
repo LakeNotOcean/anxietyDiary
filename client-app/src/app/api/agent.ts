@@ -37,13 +37,21 @@ axios.interceptors.response.use(
     return response;
   },
   (error: AxiosError) => {
-    const { data, status } = error.response!;
+    const { data, status, headers } = error.response!;
     switch (status) {
       case 400:
         toast.error("bad request");
         break;
       case 401:
-        toast.error("unauthorised");
+        if (
+          status == 401 &&
+          headers["www-authenticate"].startsWith('Bearer error="invalid_token"')
+        ) {
+          store.userStore.logout();
+          toast.error("Время сессии вышло");
+          break;
+        }
+        store.userStore.logout();
         store.userStore.setIsLoginForm(true);
         break;
       case 404:
@@ -104,6 +112,7 @@ const account = {
     request.post<User>("/account/register", user),
   changeInfo: (userInfo: UserInfo) =>
     request.post<UserInfo>("/account/changeinfo", userInfo),
+  refreshToken: () => request.post<User>("/account/refreshToken", {}),
 };
 
 const users = {

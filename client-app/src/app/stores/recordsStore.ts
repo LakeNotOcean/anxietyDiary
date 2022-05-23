@@ -33,7 +33,15 @@ export default class RecordsStore {
   pagingParams: PagingParams | null;
 
   constructor() {
-    makeAutoObservable(this);
+    makeObservable(this, {
+      records: observable,
+      selectedRecord: observable,
+      diaryDescription: observable,
+      editMode: observable,
+      loading: observable,
+      pagination: observable,
+      pagingParams: observable,
+    });
   }
 
   loadRecords = async () => {

@@ -16,8 +16,7 @@ import LoginForm from "@src/features/users/LoginForm";
 import DiaryInfo from "./layout/DiaryInfo";
 import UserInfo from "@src/features/users/UserInfo";
 import PatientList from "@src/features/users/PatientList";
-
-const descriptions = CreateDescriptions();
+import { toJS } from "mobx";
 
 function App(): JSX.Element {
   console.log("app is active");
@@ -33,13 +32,13 @@ function App(): JSX.Element {
     } else {
       commonStore.setAppLoaded(false);
     }
-  }, [commonStore, userStore, modalStore, userStore.isLoginForm]);
+    if (userStore.isLoginForm) {
+      modalStore.openModal(<LoginForm />, "Войти на сайт");
+      userStore.setIsLoginForm(false);
+    }
+  }, [commonStore, userStore, modalStore.modal.open, userStore.isLoginForm]);
 
   if (commonStore.appLoaded) return <LoadingComponent content="Загрузка..." />;
-
-  if (userStore.isLoginForm) {
-    modalStore.openModal(<LoginForm />, "Войти на сайт");
-  }
 
   function handleSetActiveDiary(diary: IDescription) {
     setActiveDiary(diary);

@@ -1,4 +1,10 @@
-import { makeObservable, observable, reaction, runInAction } from "mobx";
+import {
+  makeAutoObservable,
+  makeObservable,
+  observable,
+  reaction,
+  runInAction,
+} from "mobx";
 
 export default class CommonStore {
   token: string | null = window.localStorage.getItem("jwt");
@@ -22,9 +28,13 @@ export default class CommonStore {
   }
 
   setToken = (token: string | null) => {
-    this.token = token;
+    runInAction(() => {
+      this.token = token;
+    });
   };
   setAppLoaded = (value: boolean) => {
-    this.appLoaded = value;
+    runInAction(() => {
+      this.appLoaded = value;
+    });
   };
 }

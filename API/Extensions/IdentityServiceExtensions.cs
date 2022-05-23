@@ -20,6 +20,9 @@ namespace API.Extensions
             {
                 opt.Password.RequiredLength = 5;
                 opt.Password.RequiredUniqueChars = 1;
+                opt.Password.RequireLowercase = false;
+                opt.Password.RequireNonAlphanumeric = false;
+                opt.Password.RequireUppercase = false;
 
                 opt.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(5);
                 opt.Lockout.MaxFailedAccessAttempts = 5;
@@ -46,6 +49,7 @@ namespace API.Extensions
                         ValidateIssuer = true,
                         ValidateAudience = true,
                         ValidateLifetime = true,
+                        ClockSkew = TimeSpan.Zero,
                         ValidAudience = config["Jwt:Audience"],
                         ValidIssuer = config["Jwt:Issuer"],
                         ValidateIssuerSigningKey = true,

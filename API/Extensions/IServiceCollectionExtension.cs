@@ -39,7 +39,7 @@ namespace API.Controllers.Extensions
             {
                 opt.AddPolicy("CorsPolicy", policy =>
                 {
-                    policy.WithOrigins("http://localhost:3000").AllowAnyMethod().AllowAnyOrigin().AllowAnyHeader();
+                    policy.WithOrigins("http://localhost:3000").AllowAnyMethod().WithExposedHeaders("WWW-Authenticate", "Pagination").AllowAnyOrigin().AllowAnyHeader();
                 });
             });
 

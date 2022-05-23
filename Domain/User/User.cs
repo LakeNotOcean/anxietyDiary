@@ -52,5 +52,7 @@ namespace Domain.User
         [InverseProperty("Doctor")]
         public virtual ICollection<UserDoctor> Doctors { set; get; }
 
+        public ICollection<RefreshToken> RefreshTokens { get; set; } = new List<RefreshToken>();
+
     }
 }

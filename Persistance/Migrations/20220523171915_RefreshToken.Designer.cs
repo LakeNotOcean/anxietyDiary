@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Persistance;
 
@@ -10,9 +11,10 @@ using Persistance;
 namespace Persistance.Migrations
 {
     [DbContext(typeof(DataContext))]
-    partial class DataContextModelSnapshot : ModelSnapshot
+    [Migration("20220523171915_RefreshToken")]
+    partial class RefreshToken
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -352,12 +354,12 @@ namespace Persistance.Migrations
                     b.Property<string>("Token")
                         .HasColumnType("longtext");
 
-                    b.Property<int?>("TokenUserId")
+                    b.Property<int>("tokenUserId")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("TokenUserId");
+                    b.HasIndex("tokenUserId");
 
                     b.ToTable("refresh_token");
                 });
@@ -568,7 +570,9 @@ namespace Persistance.Migrations
                 {
                     b.HasOne("Domain.User.User", "TokenUser")
                         .WithMany("RefreshTokens")
-                        .HasForeignKey("TokenUserId");
+                        .HasForeignKey("tokenUserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.Navigation("TokenUser");
                 });

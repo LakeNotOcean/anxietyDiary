@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
+using System.Security.Cryptography;
 using System.Text;
 using Domain.User;
 using Microsoft.Extensions.Configuration;
@@ -26,7 +27,7 @@ namespace Api.Services
             var tokenDescriptor = new SecurityTokenDescriptor
             {
                 Subject = new ClaimsIdentity(claims),
-                Expires = DateTime.Now.AddMinutes(int.Parse(config["Jwt:LifeTime"])),
+                Expires = DateTime.UtcNow.AddMinutes(int.Parse(config["Jwt:LifeTime"])),
                 SigningCredentials = creds,
                 Issuer = config["Jwt:Issuer"],
                 Audience = config["Jwt:Audience"],
@@ -38,5 +39,14 @@ namespace Api.Services
             return tokenHandler.WriteToken(token);
         }
 
+        public RefreshToken GenerateRefreshToken()
+        {
+            var randomNumb = new byte[32];
+            using var rng = RandomNumberGenerator.Create();
+            rng.GetBytes(randomNumb);
+            return new RefreshToken { Token = Convert.ToBase64String(randomNumb) };
+        }
+
     }
+
 }

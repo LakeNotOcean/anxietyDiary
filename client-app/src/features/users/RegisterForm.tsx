@@ -71,11 +71,15 @@ export default observer(function RegisterForm() {
   ) => {
     let emailError = null;
     let userNameError = null;
-    await userStore.registerUser(values).catch((error) => {
-      const errors = error.errors;
-      if (errors?.email !== undefined) emailError = errors?.email[0];
-      if (errors?.userName !== undefined) userNameError = errors?.userName[0];
-    });
+    formikHelpers.setSubmitting(true);
+    await userStore
+      .registerUser(values)
+      .catch((error) => {
+        const errors = error.errors;
+        if (errors?.email !== undefined) emailError = errors?.email[0];
+        if (errors?.userName !== undefined) userNameError = errors?.userName[0];
+      })
+      .finally(() => formikHelpers.setSubmitting(false));
     formikHelpers.setErrors({
       errors: [emailError, userNameError],
     } as FormikErrors<UserRegisterRepFormValues>);

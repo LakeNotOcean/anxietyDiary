@@ -25,16 +25,24 @@ export default class UserStore {
   patientList: UserInfo[] | null = null;
   date: Date | null = null;
   dates: Date[] | null = null;
+  refreshTokenTimeout: any;
 
   constructor() {
-    makeAutoObservable(this);
+    makeObservable(this, {
+      user: observable,
+      isLoginForm: observable,
+      userDoctors: observable,
+      patientList: observable,
+      date: observable,
+      dates: observable,
+      refreshTokenTimeout: observable,
+    });
   }
 
   setIsLoginForm(value: boolean) {
-    this.isLoginForm = true;
+    runInAction(() => (this.isLoginForm = value));
   }
   get isLoggedIn() {
-    console.log("isLoggedIn is called");
     return !!this.user && this.user.role != UserRoleEnum.guest;
   }
 
@@ -48,18 +56,16 @@ export default class UserStore {
 
   login = async (creds: UserLoginFormValues) => {
     try {
-      runInAction(() => store.commonStore.setAppLoaded(true));
       const user = await agent.account.login(creds);
       store.commonStore.setToken(user.token);
-      history.push("/");
-      store.modalStore.closeModal();
+      this.startRefreshTokenTimer(user);
       runInAction(() => {
         this.user = user;
-        store.commonStore.setAppLoaded(false);
         this.isLoginForm = false;
+        history.push("/");
       });
+      store.modalStore.closeModal();
     } catch (error) {
-      runInAction(() => store.commonStore.setAppLoaded(false));
       throw error;
     }
   };
@@ -81,18 +87,16 @@ export default class UserStore {
 
   registerUser = async (creds: UserRegisterFormValues) => {
     try {
-      //runInAction(() => store.commonStore.setAppLoaded(true));
       const user = await agent.account.register(creds);
       store.commonStore.setToken(user.token);
       runInAction(() => (this.user = user));
+      this.startRefreshTokenTimer(user);
       history.push("/");
-      store.modalStore.closeModal();
       runInAction(() => {
-        store.commonStore.setAppLoaded(false);
         this.isLoginForm = false;
       });
+      store.modalStore.closeModal();
     } catch (error) {
-      //runInAction(() => store.commonStore.setAppLoaded(false));
       throw error;
     }
   };
@@ -185,4 +189,29 @@ export default class UserStore {
       throw error;
     }
   };
+
+  refreshToken = async () => {
+    this.stopRefreshTokenTimer();
+    try {
+      const user = await agent.account.refreshToken();
+      runInAction(() => (this.user = user));
+      store.commonStore.setToken(user.token);
+      this.startRefreshTokenTimer(user);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  private startRefreshTokenTimer(user: User) {
+    const jwtToken = JSON.parse(window.atob(user.token.split(".")[1]));
+    console.log("jwtToken", jwtToken);
+    const expires = new Date(jwtToken.exp * 1000);
+    const timeout = expires.getTime() - Date.now() - 60 * 1000;
+    console.log("timeout", timeout);
+    this.refreshTokenTimeout = setTimeout(this.refreshToken, timeout);
+  }
+
+  private stopRefreshTokenTimer() {
+    clearTimeout(this.refreshTokenTimeout);
+  }
 }
