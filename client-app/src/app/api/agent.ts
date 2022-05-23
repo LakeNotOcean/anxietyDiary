@@ -1,12 +1,16 @@
 import axios, { Axios, AxiosError, AxiosResponse } from "axios";
-import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import { PaginatedResult } from "../models/pagination";
 import {
   User,
+  UserInfo,
   UserLoginFormValues,
   UserRegisterFormValues,
 } from "../models/user";
+import { store } from "../stores/store";
+import { history } from "@src/index";
+import { ReqInfo, RequestSend } from "../models/request";
+import { IUserView } from "../models/diaryViewDate";
 
 axios.defaults.baseURL = "http://localhost:5000/api";
 
@@ -40,15 +44,30 @@ axios.interceptors.response.use(
         break;
       case 401:
         toast.error("unauthorised");
+        store.userStore.setIsLoginForm(true);
+        break;
       case 404:
-        const navigate = useNavigate();
-        navigate("/not-found");
+        history.push("/not-found");
+        break;
       case 500:
         toast.error("server error");
+        break;
+      case 405:
+        toast.error("method not allowed");
+        break;
     }
-    return Promise.reject(error);
+    return Promise.reject(data);
   }
 );
+
+axios.interceptors.request.use((config) => {
+  const token = store.commonStore.token;
+  if (token) {
+    config.headers.Authorization = `Bearer ${token}`;
+    return config;
+  }
+  return config;
+});
 
 const request = {
   get: <T>(url: string, params?: URLSearchParams) =>
@@ -70,21 +89,54 @@ const records = {
 };
 
 const dates = {
-  list: (params: URLSearchParams) => request.get<string[]>("/dates", params),
+  list: (params: URLSearchParams) =>
+    request.get<string[]>("/dates/diary", params),
+  notViewList: () => request.get<IUserView[]>("dates/notview"),
+  viewDiary: (params: URLSearchParams) =>
+    request.get<void>("/dates/view", params),
 };
 
 const account = {
-  current: () => request.get<User>("account/user"),
+  current: () => request.get<User>("/account/user"),
   login: (user: UserLoginFormValues) =>
     request.post<User>("/account/login", user),
   register: (user: UserRegisterFormValues) =>
     request.post<User>("/account/register", user),
+  changeInfo: (userInfo: UserInfo) =>
+    request.post<UserInfo>("/account/changeinfo", userInfo),
+};
+
+const users = {
+  getDoctors: () => request.get<UserInfo[]>("/user/doctors"),
+  removeDoctor: (userName: string) =>
+    request.delete<void>(`/user/remove?name=${userName}&isDoctor=true`),
+  findDoctors: (str: string) =>
+    request.get<UserInfo[]>(`/user/searchDoctors?str=${str}`),
+  getPatients: () => request.get<UserInfo[]>("/user/patients"),
+  removePatient: (userName: string) =>
+    request.delete<void>(`/user/remove?name=${userName}&isDoctor=false`),
+  findPatients: (str: string) =>
+    request.get<UserInfo[]>(`/user/searchUsers?str=${str}`),
+};
+
+const requests = {
+  sendRequest: (userRequest: RequestSend) =>
+    request.post<RequestSend>("/request/request", userRequest),
+  getRequestDoctors: () => request.get<ReqInfo[]>("/request/doctors"),
+  getRequestPatients: () => request.get<ReqInfo[]>("/request/patients"),
+  getUserRequest: () => request.get<ReqInfo[]>("/request/user"),
+  cancelRequest: (requestId: number) =>
+    request.delete<number>(`/request/cancel?requestId=${requestId}`),
+  acceptRequest: (requestId: number) =>
+    request.get<number>(`/request/accept?requestId=${requestId}`),
 };
 
 const agent = {
   records,
   dates,
   account,
+  requests,
+  users,
 };
 
 export default agent;

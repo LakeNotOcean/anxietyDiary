@@ -1,12 +1,22 @@
+import LoginForm from "@src/features/users/LoginForm";
 import datesFromString from "@src/lib/DatesFromString";
 import { diaryDeserialize } from "@src/lib/DiaryDeserialize";
 import diarySerialize from "@src/lib/DiarySerialize";
-import { makeObservable, observable, observe, runInAction, toJS } from "mobx";
+import {
+  makeAutoObservable,
+  makeObservable,
+  observable,
+  observe,
+  runInAction,
+  toJS,
+} from "mobx";
 import moment from "moment-timezone";
+import { toast } from "react-toastify";
 import agent from "../api/agent";
 import { IDescription } from "../models/description";
 import { IDiary } from "../models/diary";
 import { Pagination, PagingParams } from "../models/pagination";
+import { store } from "./store";
 
 export interface ILoading {
   isLoading: boolean;
@@ -17,28 +27,19 @@ export default class RecordsStore {
   records: IDiary[] = [];
   selectedRecord: IDiary | undefined = undefined;
   diaryDescription: IDescription | null = null;
-  date: Date | null = null;
   editMode = false;
   loading = { isLoading: false, message: "" } as ILoading;
   pagination: Pagination | null = null;
   pagingParams: PagingParams | null;
-  dates: Date[] | null = null;
 
   constructor() {
-    makeObservable(this, {
-      records: observable,
-      selectedRecord: observable,
-      diaryDescription: observable,
-      date: observable,
-      editMode: observable,
-      loading: observable,
-      pagination: observable,
-      pagingParams: observable,
-      dates: observable,
-    });
+    makeAutoObservable(this);
   }
 
   loadRecords = async () => {
+    if (!store.userStore.isLoggedIn) {
+      this.setLoginForm();
+    }
     runInAction(() => {
       this.setLoading(true, "Загрузка записей...");
     });
@@ -70,42 +71,19 @@ export default class RecordsStore {
     console.log(this.pagingParams.pageNumber, this.pagingParams.pageSize);
   };
 
-  loadDates = async () => {
-    runInAction(() => {
-      this.setLoading(true, "Загрузка записей...");
-    });
-    try {
-      const rawRes = await agent.dates.list(this.datesParams);
-      runInAction(() => {
-        const result = datesFromString(rawRes);
-        this.setDates(result);
-        this.setLoading(false);
-      });
-    } catch (error) {
-      console.log(error);
-      runInAction(() => {
-        this.setLoading(false);
-      });
-    }
-  };
-  setDates = (dates: Date[]) => {
-    this.dates = dates;
-  };
-
   get axiosParam() {
     const params = new URLSearchParams();
     params.append("name", this.diaryDescription.ShortName);
-    params.append("date", this.date.toISOString());
+    params.append("date", store.viewStore.currDate.toISOString());
     params.append("pagenumber", this.pagingParams.pageNumber.toString());
     params.append("pagesize", this.pagingParams.pageSize.toString());
     params.append("timezone", moment.tz.guess());
+    if (store.viewStore.isAnotherUser()) {
+      params.append("userName", store.viewStore.currUserView.userName);
+    }
     return params;
   }
-  get datesParams() {
-    const params = new URLSearchParams();
-    params.append("name", this.diaryDescription.ShortName);
-    return params;
-  }
+
   setLoading = (isLoading: boolean, message = "") => {
     this.loading = { isLoading: isLoading, message: message } as ILoading;
   };
@@ -123,6 +101,14 @@ export default class RecordsStore {
   };
 
   openForm = (id?: number) => {
+    if (store.viewStore.isAnotherUser) {
+      toast.error("Запись другого пользователя");
+      return;
+    }
+    if (!store.userStore.isLoggedIn) {
+      toast.error("Для добавлении записи необходимо авторизироваться");
+      return;
+    }
     id ? this.selectRecord(id) : this.cancelSelectedRecord();
     this.editMode = true;
   };
@@ -132,8 +118,17 @@ export default class RecordsStore {
     this.editMode = false;
   };
 
+  setLoginForm = () => {
+    store.userStore.setIsLoginForm(true);
+  };
   createOrEditRecord = async (record: IDiary) => {
+    if (!store.userStore.isLoggedIn) {
+      this.setLoginForm();
+      return;
+    }
+
     console.log("Create or edit: ", record);
+
     this.setLoading(true, "Добавление записи...");
     try {
       if (record.Id) {
@@ -199,6 +194,11 @@ export default class RecordsStore {
   };
 
   deleteRecord = async (record: IDiary) => {
+    if (!store.userStore.isLoggedIn) {
+      this.setLoginForm();
+      return;
+    }
+
     this.setLoading(true, "Удаление записи...");
     try {
       await agent.records.delete(this.diaryDescription.ShortName, record.Id);

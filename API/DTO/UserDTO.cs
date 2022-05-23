@@ -4,16 +4,16 @@ namespace API.DTO
 {
     public class UserDTO
     {
-        public string UserName { get; set; }
+        public string userName { get; set; }
 
-        public string FirstName { get; set; }
-        public string SecondName { get; set; }
+        public string firstName { get; set; }
+        public string secondName { get; set; }
 
-        public RoleDTO Role { get; set; }
+        public string role { get; set; }
 
-        public string Token { get; set; }
+        public string token { get; set; }
 
         public bool isSearching { get; set; }
-        public string Description { get; set; }
+        public string description { get; set; }
     }
 }

@@ -30,10 +30,22 @@ namespace API.Controllers
 
 
         [Authorize(Roles = "Doctor, Administrator")]
-        [HttpGet("search/{str}")]
+        [HttpGet("searchUsers")]
         public async Task<ActionResult<List<UserInfoDTO>>> SearchUsers(string str)
         {
             var foundUsers = await _context.Users.Where(u => u.UserName.Contains(str) && u.isSearching).Include(u => u.Role).ToListAsync();
+            var result = new List<UserInfoDTO> { };
+            foreach (var u in foundUsers)
+            {
+                result.Add(createUserObject(u));
+            }
+            return result;
+        }
+
+        [HttpGet("searchDoctors")]
+        public async Task<ActionResult<List<UserInfoDTO>>> SearchDoctors(string str)
+        {
+            var foundUsers = await _context.Users.Where(u => u.UserName.Contains(str) && u.isSearching && u.Role.Name == RolesEnum.Doctor.GetDescription()).Include(u => u.Role).ToListAsync();
             var result = new List<UserInfoDTO> { };
             foreach (var u in foundUsers)
             {
@@ -75,11 +87,11 @@ namespace API.Controllers
             return getUsersInfo(ref doctors);
         }
 
-        [HttpGet("remove/{name}/{isDoctor:bool}")]
-        public async Task<ActionResult> removeUserView(string name, bool isDoctor)
+        [HttpDelete("remove")]
+        public async Task<ActionResult> removeUserView(string name, bool isDoctor = false)
         {
             var userId = getCurrentUserId();
-            var user = _context.Users.SingleOrDefaultAsync(u => u.Id == userId);
+            var user = await _context.Users.SingleOrDefaultAsync(u => u.Id == userId);
             var targetUser = await _context.Users.SingleOrDefaultAsync(u => u.UserName == name);
             if (targetUser == null || user == null)
             {
@@ -133,9 +145,10 @@ namespace API.Controllers
         {
             return new UserInfoDTO
             {
-                UserName = user.UserName,
-                FirstName = user.FirstName,
-                SecondName = user.SecondName,
+                userName = user.UserName,
+                firstName = user.FirstName,
+                secondName = user.SecondName,
+                description = user.Description
             };
         }
 

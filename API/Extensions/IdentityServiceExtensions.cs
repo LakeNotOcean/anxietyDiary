@@ -37,6 +37,7 @@ namespace API.Extensions
             services.AddAuthentication(opt =>
             {
                 opt.DefaultAuthenticateScheme = "Bearer";
+                opt.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
             })
                 .AddJwtBearer(opt =>
                 {

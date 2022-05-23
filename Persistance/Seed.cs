@@ -63,15 +63,6 @@ namespace Persistance
                 }, "12345Nn.");
 
             };
-
-            // var Categories = new List<DiaryCategory>{
-            //     new DiaryCategory
-            //     {
-            //         Name="Мысли, чувства, физиологические и поведенческие реакции",
-            //         Description=""
-            //     },
-            // };
-
         }
         public static async Task SeedDiaryData(DataContext context)
         {

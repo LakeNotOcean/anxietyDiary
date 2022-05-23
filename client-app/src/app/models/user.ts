@@ -6,10 +6,10 @@ export interface UserInfo {
   secondName: string;
   role: UserRoleEnum;
   description: string;
+  isSearching: boolean;
 }
 
 export interface User extends UserInfo {
-  isSerching: string;
   token: string;
 }
 
@@ -18,7 +18,12 @@ export interface UserRegisterFormValues {
   password: string;
   userName: string;
   firstName?: string;
-  secodName?: string;
+  secondName?: string;
+}
+
+export interface UserRegisterRepFormValues extends UserRegisterFormValues {
+  repeatPassword: string;
+  errors?: string[];
 }
 
 export interface UserLoginFormValues {

@@ -1,19 +1,12 @@
-import React, { Fragment, useEffect, useRef, useState } from "react";
+import React, { useEffect } from "react";
 import { CreateDescriptions } from "@src/lib/CreateDescriptions";
 import DiaryDashBoard from "@src/features/dashboard/diaryDashboard";
 import LoadingComponent from "./LoadingComponent";
-import {
-  NavigateOptions,
-  useHref,
-  useLocation,
-  useNavigate,
-  useParams,
-} from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { IDescription } from "../models/description";
 import { useStore } from "../stores/store";
 import { observer } from "mobx-react-lite";
 import { PagingParams } from "../models/pagination";
-import { toJS } from "mobx";
 
 interface Props {
   setActiveDiary: (diary: IDescription) => void;
@@ -22,7 +15,7 @@ interface Props {
 let descriptions = CreateDescriptions();
 
 export function Diary({ setActiveDiary }: Props): JSX.Element {
-  const { recordsStore } = useStore();
+  const { recordsStore, viewStore } = useStore();
 
   const { name, dateString } = useParams<{
     name: string;
@@ -32,26 +25,31 @@ export function Diary({ setActiveDiary }: Props): JSX.Element {
   const date = new Date(parseInt(dateString));
 
   recordsStore.diaryDescription = descriptions.get(name);
-  recordsStore.date = date;
+  viewStore.currDate = date;
   recordsStore.pagingParams = new PagingParams(1, name);
 
   useEffect(() => {
     setActiveDiary(recordsStore.diaryDescription);
+    viewStore.watchDiary(recordsStore.diaryDescription.ShortName);
   }, []);
 
   const navigate = useNavigate();
 
   function onDateClick(date: Date) {
     navigate(`/diary/${name}/${date.getTime()}`, { replace: true });
-    recordsStore.date = date;
+    viewStore.currDate = date;
     recordsStore.loadRecords();
-    recordsStore.loadDates();
+    viewStore.loadDates();
   }
   console.log("Diary is render");
 
   useEffect(() => {
-    recordsStore.loadRecords();
-    recordsStore.loadDates();
+    const fetchApi = async () => {
+      await recordsStore.loadRecords();
+      await viewStore.loadDates();
+      await viewStore.watchDiary(recordsStore.diaryDescription.ShortName);
+    };
+    fetchApi();
   }, [recordsStore]);
 
   if (recordsStore.loading.isLoading) {

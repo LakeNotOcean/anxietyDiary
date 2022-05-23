@@ -1,0 +1,109 @@
+@import 'constant';
+
+
+.user-info{
+    background-color: $MainFormColor;
+    display: flex;
+    flex-direction: column;
+}
+
+.user-info-fields{
+    display: flex;
+    flex-flow:column;
+    margin-top: 20px;
+    padding-left: 20px;
+}
+
+.user-info-fields  h3 {
+    color:$dot-color;
+}
+.user-info-fields  h5 {
+    color:grey;
+}
+
+.ui.grid > .row > .column
+{
+    width: fit-content;
+}
+
+.user-info-personal{
+    margin-top: 50px;
+    margin-bottom: 20px;
+    display: inline-flex;
+}
+
+.user-info-info{
+    max-width: 600px;
+}
+
+.user-info-doctors{
+    max-width: 450px;
+}
+
+.user-info-requests
+{
+    margin-top: 40px;
+}
+
+.ui.modal .ui.input
+{
+    border:none;
+}
+
+.ui.loader{
+    position: relative;
+    margin: 10px;
+}
+
+.description{
+    margin-top: 10px;
+    margin-bottom: 10px;
+}
+
+.request-element{
+    margin-bottom: 10px;
+}
+
+.extra.content .ui.green.basic.button{
+    margin-left: 20px;
+}
+
+.user-info-add-users{
+    display: flex;
+    flex-flow: row;
+    column-gap: 30px;
+}
+
+.patient-list-grid{
+    display: inline-flex;
+  flex-wrap: wrap; /* enable the wrap */
+  margin:5px;
+  vertical-align: top;
+  column-gap: 10px;
+}
+
+.patient-list-grid>*{
+    flex-basis: 20%;
+    min-height: 200px;
+    min-width: 200px;
+    max-width: 300px;
+    max-height: 300px;
+    box-sizing: border-box;
+}
+
+
+.redicon-user{
+    position: absolute;
+    bottom: 129px;
+    left: 187px;
+    background: red;
+    padding: 4px;
+    box-sizing: border-box;
+    border-radius: 100%;
+}
+
+.patient-card:hover{
+    background-color: rgb(198, 211, 211);
+}
+
+

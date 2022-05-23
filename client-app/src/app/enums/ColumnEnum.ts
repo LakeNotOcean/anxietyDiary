@@ -8,5 +8,5 @@ export enum ColumnTypeEnum {
 
 export enum ColumnEnum {
   Id = "Id",
-  DateTime = "DateTime",
+  DateTime = "ChangeDateTime",
 }

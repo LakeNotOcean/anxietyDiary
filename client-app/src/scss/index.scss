@@ -8,6 +8,7 @@
 @import 'pagination';
 @import 'humanBody';
 @import 'flowchart';
+@import 'user';
 
 
 @font-face {
@@ -36,6 +37,16 @@ body{
     margin-left: 50px;
     margin-right: 50px;
 }
+
+.redicon{
+    position: absolute;
+    bottom: 33px;
+    left:105px;
+    background: red;
+    padding:4px;
+    box-sizing: border-box;
+    border-radius: 100%;
+  }
 
 
 

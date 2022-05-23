@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Persistance;
 
@@ -10,9 +11,10 @@ using Persistance;
 namespace Persistance.Migrations
 {
     [DbContext(typeof(DataContext))]
-    partial class DataContextModelSnapshot : ModelSnapshot
+    [Migration("20220518172431_fuxedUserToDiary")]
+    partial class fuxedUserToDiary
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -50,7 +52,7 @@ namespace Persistance.Migrations
 
                     b.HasIndex("DiaryUserId");
 
-                    b.ToTable("ActivityDiary", (string)null);
+                    b.ToTable("ActivityDiary");
                 });
 
             modelBuilder.Entity("Domain.Diaries.EmotionsDiary", b =>
@@ -87,7 +89,7 @@ namespace Persistance.Migrations
 
                     b.HasIndex("DiaryUserId");
 
-                    b.ToTable("emotions_diary", (string)null);
+                    b.ToTable("emotions_diary");
                 });
 
             modelBuilder.Entity("Domain.Diaries.HumanBobyDiary", b =>
@@ -130,7 +132,7 @@ namespace Persistance.Migrations
 
                     b.HasIndex("DiaryUserId");
 
-                    b.ToTable("HumanBodyDiary", (string)null);
+                    b.ToTable("HumanBodyDiary");
                 });
 
             modelBuilder.Entity("Domain.Diaries.InitialDiary", b =>
@@ -173,7 +175,7 @@ namespace Persistance.Migrations
 
                     b.HasIndex("DiaryUserId");
 
-                    b.ToTable("InitialDiary", (string)null);
+                    b.ToTable("InitialDiary");
                 });
 
             modelBuilder.Entity("Domain.Diaries.WrongRulesDiary", b =>
@@ -216,7 +218,7 @@ namespace Persistance.Migrations
 
                     b.HasIndex("DiaryUserId");
 
-                    b.ToTable("wrong_rules_diary", (string)null);
+                    b.ToTable("wrong_rules_diary");
                 });
 
             modelBuilder.Entity("Domain.DiaryExpensions.ColumnPosition", b =>
@@ -239,7 +241,7 @@ namespace Persistance.Migrations
                     b.HasIndex("ColumnId")
                         .IsUnique();
 
-                    b.ToTable("ColumnPosition", (string)null);
+                    b.ToTable("ColumnPosition");
                 });
 
             modelBuilder.Entity("Domain.DiaryExpensions.DiaryCategory", b =>
@@ -256,7 +258,7 @@ namespace Persistance.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Categories", (string)null);
+                    b.ToTable("Categories");
                 });
 
             modelBuilder.Entity("Domain.DiaryExpensions.DiaryColumn", b =>
@@ -289,7 +291,7 @@ namespace Persistance.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("DiaryColumn", (string)null);
+                    b.ToTable("DiaryColumn");
 
                     b.HasDiscriminator<string>("Discriminator").HasValue("DiaryColumn");
                 });
@@ -320,7 +322,7 @@ namespace Persistance.Migrations
 
                     b.HasIndex("CategoryId");
 
-                    b.ToTable("Descriptions", (string)null);
+                    b.ToTable("Descriptions");
                 });
 
             modelBuilder.Entity("Domain.User.LastUserView", b =>
@@ -344,7 +346,7 @@ namespace Persistance.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("UsersViews", (string)null);
+                    b.ToTable("UsersViews");
                 });
 
             modelBuilder.Entity("Domain.User.Role", b =>
@@ -366,7 +368,7 @@ namespace Persistance.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Roles", (string)null);
+                    b.ToTable("Roles");
                 });
 
             modelBuilder.Entity("Domain.User.User", b =>
@@ -452,7 +454,7 @@ namespace Persistance.Migrations
 
                     b.HasIndex("RoleId");
 
-                    b.ToTable("Users", (string)null);
+                    b.ToTable("Users");
                 });
 
             modelBuilder.Entity("Domain.User.UserDoctor", b =>
@@ -475,7 +477,7 @@ namespace Persistance.Migrations
 
                     b.HasIndex("PatientId");
 
-                    b.ToTable("UserDoctors", (string)null);
+                    b.ToTable("UserDoctors");
                 });
 
             modelBuilder.Entity("Domain.User.UserRequest", b =>
@@ -499,7 +501,7 @@ namespace Persistance.Migrations
 
                     b.HasIndex("UserTargetId");
 
-                    b.ToTable("UsersRequests", (string)null);
+                    b.ToTable("UsersRequests");
                 });
 
             modelBuilder.Entity("Domain.DiaryExpensions.ArbitraryColumn", b =>

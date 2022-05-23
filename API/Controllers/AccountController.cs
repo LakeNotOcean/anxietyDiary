@@ -69,11 +69,13 @@ namespace Api.Controllers
         {
             if (await _userManager.Users.AnyAsync(user => user.Email == registerDto.Email))
             {
-                return BadRequest("Invalid email");
+                ModelState.AddModelError("email", "Неверный email");
+                return ValidationProblem();
             }
             if (await _userManager.Users.AnyAsync(user => user.UserName == registerDto.UserName))
             {
-                return BadRequest("Ivalid UserName");
+                ModelState.AddModelError("userName", "Неверное имя пользователя");
+                return ValidationProblem();
             }
             var user = new User
             {
@@ -92,7 +94,6 @@ namespace Api.Controllers
             return BadRequest("problem register user");
         }
 
-        [Authorize]
         [HttpGet("user")]
         public async Task<ActionResult<UserDTO>> getCurrentUser()
         {
@@ -101,10 +102,8 @@ namespace Api.Controllers
             {
                 return new UserDTO
                 {
-                    Role = new RoleDTO
-                    {
-                        RoleName = RolesEnum.Guest.GetDescription()
-                    },
+                    role = RolesEnum.Guest.GetDescription()
+
                 };
             }
             var user = await _userManager.FindByEmailAsync(User.FindFirstValue(ClaimTypes.Email));
@@ -114,7 +113,7 @@ namespace Api.Controllers
         }
 
         [Authorize]
-        [HttpPost]
+        [HttpPost("changeinfo")]
         public async Task<IActionResult> changeUser(UserDTO user)
         {
             var currentUser = await _userManager.FindByEmailAsync(User.FindFirstValue(ClaimTypes.Email));
@@ -134,24 +133,21 @@ namespace Api.Controllers
         {
             return new UserDTO
             {
-                UserName = user.UserName,
-                FirstName = user.FirstName,
-                SecondName = user.SecondName,
-                Description = user.Description,
+                userName = user.UserName,
+                firstName = user.FirstName,
+                secondName = user.SecondName,
+                description = user.Description,
                 isSearching = user.isSearching,
-                Role = new RoleDTO
-                {
-                    RoleName = user.Role.Name
-                },
-                Token = _tokenService.CreateToken(user, _config)
+                role = user.Role.Name,
+                token = _tokenService.CreateToken(user, _config)
             };
         }
         private void changeUserEntity(ref User user, UserDTO userDto)
         {
             user.isSearching = userDto.isSearching;
-            user.FirstName = user.SecondName;
-            user.SecondName = userDto.SecondName;
-            user.Description = userDto.Description;
+            user.FirstName = userDto.firstName;
+            user.SecondName = userDto.secondName;
+            user.Description = userDto.description;
         }
     }
 }

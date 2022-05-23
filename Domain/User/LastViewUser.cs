@@ -19,8 +19,6 @@ namespace Domain.User
         [Required]
         [ForeignKey("UserDoctor"), Column(Order = 1)]
         public int UserDoctorId { get; set; }
-
-        [DatabaseGenerated(DatabaseGeneratedOption.Computed)]
         public DateTime LastViewDate { get; set; }
     }
 }

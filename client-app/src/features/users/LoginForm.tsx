@@ -4,10 +4,11 @@ import { ErrorMessage, Form, Formik, FormikErrors, FormikValues } from "formik";
 import { observer } from "mobx-react-lite";
 import { useSyncExternalStore } from "react";
 import { Button, Label } from "semantic-ui-react";
+import RegisterForm from "./RegisterForm";
 import UserTextInput from "./userFormInput";
 
 export default observer(function LoginForm() {
-  const { userStore } = useStore();
+  const { modalStore, userStore } = useStore();
   const validate = (values: UserLoginFormValues) => {
     let errors: FormikErrors<FormikValues> = {};
     if (!values.email) {
@@ -24,6 +25,7 @@ export default observer(function LoginForm() {
     } else if (values.password.length > 60) {
       errors.password = "Пароль слишком длинный";
     }
+    return errors;
   };
   return (
     <Formik
@@ -32,40 +34,59 @@ export default observer(function LoginForm() {
         email: "",
         password: "",
       }}
-      onSubmit={(values, { setErrors }) =>
-        userStore
-          .login(values)
-          .catch((error) =>
-            setErrors({ email: "Неверный email", password: "Неверный пароль" })
-          )
-      }
+      onSubmit={(values, { setErrors, setSubmitting }) => {
+        setSubmitting(true);
+        userStore.login(values).catch((error) => {
+          setErrors({
+            email: "Неверный email или пароль",
+            password: "Неверный email или пароль",
+          });
+        });
+        setSubmitting(false);
+      }}
     >
-      {({ handleSubmit, isSubmitting, errors }) => (
-        <Form className="ui form" onSubmit={handleSubmit} autoComplete="off">
-          <UserTextInput name="email" placeholder="email" label="Email" />
-          <UserTextInput
-            name="password"
-            placeholder="пароль"
-            type="password"
-            label="Введите пароль"
-          />
-          <ErrorMessage
-            name="error"
-            render={() => (
-              <Label
-                style={{ marginBotton: 10 }}
-                basic
-                color="red"
-                content={
-                  (errors.email || errors.password) &&
-                  "Неверный логин или пароль"
-                }
-              ></Label>
-            )}
-          />
-          <Button positive content="Создать пользователя" type="submit" fuild />
-        </Form>
-      )}
+      {({ handleSubmit, isSubmitting, dirty, isValid, errors }) => {
+        return (
+          <Form className="ui form" onSubmit={handleSubmit} autoComplete="off">
+            <UserTextInput name="email" placeholder="email" label="Email" />
+            <UserTextInput
+              name="password"
+              placeholder="пароль"
+              type="password"
+              label="Введите пароль"
+            />
+            <ErrorMessage
+              name="error"
+              render={() => (
+                <Label
+                  style={{ marginBotton: "10px", marginTop: "10px" }}
+                  basic
+                  color="red"
+                  content={
+                    (errors.email || errors.password) &&
+                    "Неверный логин или пароль"
+                  }
+                ></Label>
+              )}
+            />
+
+            <Label
+              onClick={() =>
+                modalStore.openModal(<RegisterForm />, "Создание аккаунта")
+              }
+            >
+              Нет аккаунта?
+            </Label>
+            <Button
+              disabled={!isValid || isSubmitting}
+              positive
+              content={isSubmitting ? "Выполняется вход" : "Войти"}
+              type="submit"
+              fuild
+            />
+          </Form>
+        );
+      }}
     </Formik>
   );
 });

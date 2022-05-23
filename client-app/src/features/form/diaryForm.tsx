@@ -1,11 +1,6 @@
 import { IColumn } from "@src/app/models/column";
-import { Button, Form, Modal, Segment, TextArea } from "semantic-ui-react";
-import React, {
-  ChangeEvent,
-  ChangeEventHandler,
-  useEffect,
-  useState,
-} from "react";
+import { Button, Form, Modal, TextArea } from "semantic-ui-react";
+import React, { ChangeEvent, useState } from "react";
 import { createInitialDiary } from "@src/lib/initialDiary";
 import FormTemplate from "../templates/forms/formTemplate";
 import { useStore } from "@src/app/stores/store";
@@ -22,7 +17,7 @@ export default observer(function DiaryForm({
   columns,
   diaryName,
 }: Props): JSX.Element {
-  const { recordsStore } = useStore();
+  const { recordsStore, userStore } = useStore();
   const { selectedRecord, closeForm, createOrEditRecord, deleteRecord } =
     recordsStore;
 

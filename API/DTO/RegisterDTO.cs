@@ -7,15 +7,15 @@ namespace Api.DTO
         [Required]
         public string Email { get; set; }
         [Required]
-        [RegularExpression(@"(\p{IsBasicLatin}|^[0-9]+){3,10}", ErrorMessage = "UserName is invalid")]
+        [RegularExpression(@"^([A-Za-z0-9]){3,10}$", ErrorMessage = "Неверное имя пользователя")]
         public string UserName { get; set; }
         [Required]
-        [RegularExpression(@"^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{5,60}$", ErrorMessage = "Password must be complex")]
+        [RegularExpression(@"^([\x00-\x7F]){5,60}$", ErrorMessage = "Некорректный формат пароля")]
         public string Password { get; set; }
 
-        [RegularExpression(@"(^\p{IsCyrillic}+$)|(^\p{IsBasicLatin}+$)", ErrorMessage = "Invalid name format")]
+        [RegularExpression(@"(^\p{IsCyrillic}+$)|(^\p{IsBasicLatin}+$)", ErrorMessage = "Некорректный формат имени")]
         public string FirstName { get; set; }
-        [RegularExpression(@"(^\p{IsCyrillic}+$)|(^\p{IsBasicLatin}+$)", ErrorMessage = "Invalid name format")]
+        [RegularExpression(@"(^\p{IsCyrillic}+$)|(^\p{IsBasicLatin}+$)", ErrorMessage = "Неккоретный формат имени")]
         public string SecondName { get; set; }
     }
 }
