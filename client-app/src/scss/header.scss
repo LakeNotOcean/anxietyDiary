@@ -14,3 +14,25 @@
 .menu.transition.visible{
     margin-top: 20px;
 }
+
+.menu-header{
+    background-color:#1b1c1d !important;
+}
+
+.ui.inverted.menu .active.item{
+    background-color:#1b1c1d ;
+}
+
+.ui.dropdown{
+    background-color: #2185d0;
+}
+
+.redicon-patients{
+    position: absolute;
+    bottom: 23px;
+    left: 121px;
+    background: red;
+    padding: 4px;
+    box-sizing: border-box;
+    border-radius: 100%;
+  }

@@ -146,7 +146,7 @@ export default class RequestStore {
       });
     } catch (error) {
       runInAction(() => store.commonStore.setAppLoaded(false));
-      toast.error("не удалось приянть запрос");
+      toast.error("не удалось принять запрос");
     }
   };
 }

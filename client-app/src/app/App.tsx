@@ -15,6 +15,7 @@ import ModalContainer from "./layout/ModalContainer";
 import LoginForm from "@src/features/users/LoginForm";
 import DiaryInfo from "./layout/DiaryInfo";
 import UserInfo from "@src/features/users/UserInfo";
+import PatientList from "@src/features/users/PatientList";
 
 const descriptions = CreateDescriptions();
 
@@ -32,9 +33,10 @@ function App(): JSX.Element {
     } else {
       commonStore.setAppLoaded(false);
     }
-  }, [commonStore, userStore, modalStore]);
+  }, [commonStore, userStore, modalStore, userStore.isLoginForm]);
 
   if (commonStore.appLoaded) return <LoadingComponent content="Загрузка..." />;
+
   if (userStore.isLoginForm) {
     modalStore.openModal(<LoginForm />, "Войти на сайт");
   }
@@ -63,6 +65,10 @@ function App(): JSX.Element {
     {
       path: "/account",
       element: <UserInfo />,
+    },
+    {
+      path: "/patients",
+      element: <PatientList />,
     },
   ]);
 

@@ -9,8 +9,8 @@ import {
 } from "../models/user";
 import { store } from "../stores/store";
 import { history } from "@src/index";
-import { IDescription } from "../models/description";
 import { ReqInfo, RequestSend } from "../models/request";
+import { IUserView } from "../models/diaryViewDate";
 
 axios.defaults.baseURL = "http://localhost:5000/api";
 
@@ -89,7 +89,11 @@ const records = {
 };
 
 const dates = {
-  list: (params: URLSearchParams) => request.get<string[]>("/dates", params),
+  list: (params: URLSearchParams) =>
+    request.get<string[]>("/dates/diary", params),
+  notViewList: () => request.get<IUserView[]>("dates/notview"),
+  viewDiary: (params: URLSearchParams) =>
+    request.get<void>("/dates/view", params),
 };
 
 const account = {
@@ -124,7 +128,7 @@ const requests = {
   cancelRequest: (requestId: number) =>
     request.delete<number>(`/request/cancel?requestId=${requestId}`),
   acceptRequest: (requestId: number) =>
-    request.delete<number>(`/request/accept?requestId=${requestId}`),
+    request.get<number>(`/request/accept?requestId=${requestId}`),
 };
 
 const agent = {

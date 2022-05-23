@@ -17,7 +17,7 @@ interface DashBoardProps {
 export default observer(function DiaryDashBoard({
   onDateClick,
 }: DashBoardProps): JSX.Element {
-  const { recordsStore } = useStore();
+  const { recordsStore, viewStore } = useStore();
   const {
     diaryDescription,
     records,
@@ -26,11 +26,13 @@ export default observer(function DiaryDashBoard({
     setPagingParams,
     pagination,
     loadRecords,
-    dates,
-    loadDates,
   } = recordsStore;
 
+  const { dates, currDate, isAnotherUser, getDiaryLastViewDate } = viewStore;
+
   const [loading, setLoading] = useState(false);
+
+  const diaryName = diaryDescription.ShortName;
 
   function tileClassName({ date, view }: CalendarTileProperties) {
     // Add class to tiles in month view only
@@ -41,11 +43,20 @@ export default observer(function DiaryDashBoard({
     if (view === "month") {
       if (dateString == new Date().toDateString())
         return "calendar-day current-day";
-      if (dateString == recordsStore.date.toDateString())
+      if (dateString == currDate.toDateString())
         return "calendar-day chosen-day";
       // Check if a date React-Calendar wants to check is on the list of dates to add class to
       if (dates.find((d) => d.toDateString() == date.toDateString())) {
-        return "calendar-day record-day";
+        let dateClassStr = "calendar-day record-day";
+        if (isAnotherUser) {
+          const lastViewDate = getDiaryLastViewDate(diaryName);
+          console.log("lastViewDate", lastViewDate);
+          if (date > lastViewDate) {
+            dateClassStr = dateClassStr.concat(" ", "notview-day");
+            console.log(dateClassStr);
+          }
+        }
+        return dateClassStr;
       }
     }
   }
@@ -79,12 +90,14 @@ export default observer(function DiaryDashBoard({
         </div>
         <div className="content-controller">
           <Calendar tileClassName={tileClassName} onClickDay={onDateClick} />
-          <Button
-            positive
-            content="Добавить запись"
-            onClick={() => openForm()}
-            size={"medium"}
-          ></Button>
+          {!viewStore.isAnotherUser && (
+            <Button
+              positive
+              content="Добавить запись"
+              onClick={() => openForm()}
+              size={"medium"}
+            ></Button>
+          )}
         </div>
 
         {editMode && (

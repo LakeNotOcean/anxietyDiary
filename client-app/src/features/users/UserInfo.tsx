@@ -134,23 +134,40 @@ export default observer(function UserInfo() {
           <RequestsComponent
             requests={userReq}
             cancelRequest={requestStore.cancelRequest}
-            acceptRequest={requestStore.acceptRequest}
           />
         </Container>
-        <Button
-          primary
-          content="Добавить доктора"
-          style={{ width: "300px" }}
-          onClick={() => {
-            modalStore.openModal(
-              <FindUserForm
-                handleResultSelect={requestStore.sendRequestToDoctor}
-                handleSearchRequest={userStore.findDoctors}
-              />,
-              "Поиск доктора"
-            );
-          }}
-        />
+        <div className="user-info-add-users">
+          <Button
+            primary
+            content="Добавить доктора"
+            style={{ width: "300px" }}
+            onClick={() => {
+              modalStore.openModal(
+                <FindUserForm
+                  handleResultSelect={requestStore.sendRequestToDoctor}
+                  handleSearchRequest={userStore.findDoctors}
+                />,
+                "Поиск доктора"
+              );
+            }}
+          />
+          {userStore.user.role != UserRoleEnum.patient && (
+            <Button
+              primary
+              content="Добавить пациента"
+              style={{ width: "300px" }}
+              onClick={() => {
+                modalStore.openModal(
+                  <FindUserForm
+                    handleResultSelect={requestStore.sendRequestToPatient}
+                    handleSearchRequest={userStore.findPatients}
+                  />,
+                  "Поиск пациента"
+                );
+              }}
+            />
+          )}
+        </div>
       </div>
     </Segment>
   );
@@ -243,7 +260,7 @@ function DoctorsComponent({ handleDeleteDoctor, doctors }: DProps) {
 interface RProps {
   requests: ReqInfo[] | null;
   cancelRequest: (req: ReqInfo) => void;
-  acceptRequest: (req: ReqInfo) => void;
+  acceptRequest?: (req: ReqInfo) => void;
 }
 function RequestsComponent({ requests, cancelRequest, acceptRequest }: RProps) {
   if (requests === null) {
@@ -252,12 +269,14 @@ function RequestsComponent({ requests, cancelRequest, acceptRequest }: RProps) {
   const res = requests.map((value, key) => {
     console.log("render is called");
     return (
-      <RequestElement
-        request={value}
-        id={key}
-        handleDeleteRequest={cancelRequest}
-        handleAcceptRequest={acceptRequest}
-      />
+      <List.Item>
+        <RequestElement
+          request={value}
+          id={key}
+          handleDeleteRequest={cancelRequest}
+          handleAcceptRequest={acceptRequest}
+        />
+      </List.Item>
     );
   });
 

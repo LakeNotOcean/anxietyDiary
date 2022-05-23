@@ -50,7 +50,7 @@ namespace Persistance.Migrations
 
                     b.HasIndex("DiaryUserId");
 
-                    b.ToTable("ActivityDiary");
+                    b.ToTable("ActivityDiary", (string)null);
                 });
 
             modelBuilder.Entity("Domain.Diaries.EmotionsDiary", b =>
@@ -87,7 +87,7 @@ namespace Persistance.Migrations
 
                     b.HasIndex("DiaryUserId");
 
-                    b.ToTable("emotions_diary");
+                    b.ToTable("emotions_diary", (string)null);
                 });
 
             modelBuilder.Entity("Domain.Diaries.HumanBobyDiary", b =>
@@ -130,7 +130,7 @@ namespace Persistance.Migrations
 
                     b.HasIndex("DiaryUserId");
 
-                    b.ToTable("HumanBodyDiary");
+                    b.ToTable("HumanBodyDiary", (string)null);
                 });
 
             modelBuilder.Entity("Domain.Diaries.InitialDiary", b =>
@@ -173,7 +173,7 @@ namespace Persistance.Migrations
 
                     b.HasIndex("DiaryUserId");
 
-                    b.ToTable("InitialDiary");
+                    b.ToTable("InitialDiary", (string)null);
                 });
 
             modelBuilder.Entity("Domain.Diaries.WrongRulesDiary", b =>
@@ -216,7 +216,7 @@ namespace Persistance.Migrations
 
                     b.HasIndex("DiaryUserId");
 
-                    b.ToTable("wrong_rules_diary");
+                    b.ToTable("wrong_rules_diary", (string)null);
                 });
 
             modelBuilder.Entity("Domain.DiaryExpensions.ColumnPosition", b =>
@@ -239,7 +239,7 @@ namespace Persistance.Migrations
                     b.HasIndex("ColumnId")
                         .IsUnique();
 
-                    b.ToTable("ColumnPosition");
+                    b.ToTable("ColumnPosition", (string)null);
                 });
 
             modelBuilder.Entity("Domain.DiaryExpensions.DiaryCategory", b =>
@@ -256,7 +256,7 @@ namespace Persistance.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Categories");
+                    b.ToTable("Categories", (string)null);
                 });
 
             modelBuilder.Entity("Domain.DiaryExpensions.DiaryColumn", b =>
@@ -289,7 +289,7 @@ namespace Persistance.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("DiaryColumn");
+                    b.ToTable("DiaryColumn", (string)null);
 
                     b.HasDiscriminator<string>("Discriminator").HasValue("DiaryColumn");
                 });
@@ -320,7 +320,7 @@ namespace Persistance.Migrations
 
                     b.HasIndex("CategoryId");
 
-                    b.ToTable("Descriptions");
+                    b.ToTable("Descriptions", (string)null);
                 });
 
             modelBuilder.Entity("Domain.User.LastUserView", b =>
@@ -344,7 +344,7 @@ namespace Persistance.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("UsersViews");
+                    b.ToTable("UsersViews", (string)null);
                 });
 
             modelBuilder.Entity("Domain.User.Role", b =>
@@ -366,7 +366,7 @@ namespace Persistance.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Roles");
+                    b.ToTable("Roles", (string)null);
                 });
 
             modelBuilder.Entity("Domain.User.User", b =>
@@ -452,7 +452,7 @@ namespace Persistance.Migrations
 
                     b.HasIndex("RoleId");
 
-                    b.ToTable("Users");
+                    b.ToTable("Users", (string)null);
                 });
 
             modelBuilder.Entity("Domain.User.UserDoctor", b =>
@@ -475,7 +475,7 @@ namespace Persistance.Migrations
 
                     b.HasIndex("PatientId");
 
-                    b.ToTable("UserDoctors");
+                    b.ToTable("UserDoctors", (string)null);
                 });
 
             modelBuilder.Entity("Domain.User.UserRequest", b =>
@@ -499,7 +499,7 @@ namespace Persistance.Migrations
 
                     b.HasIndex("UserTargetId");
 
-                    b.ToTable("UsersRequests");
+                    b.ToTable("UsersRequests", (string)null);
                 });
 
             modelBuilder.Entity("Domain.DiaryExpensions.ArbitraryColumn", b =>

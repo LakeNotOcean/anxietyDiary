@@ -51,6 +51,7 @@ namespace API.CRUD
 
                 var diary = _context.GetType().GetProperty(diaryInfo.PropertyName).GetValue(_context) as IQueryable<BaseDiary>;
                 var result = await diary.Select(d => d.Date.Date).Distinct().ToListAsync();
+
                 return Result<List<DateTime>>.Success(result);
             }
         }

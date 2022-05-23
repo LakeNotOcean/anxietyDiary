@@ -91,7 +91,7 @@ namespace API.Controllers
         public async Task<ActionResult> removeUserView(string name, bool isDoctor = false)
         {
             var userId = getCurrentUserId();
-            var user = _context.Users.SingleOrDefaultAsync(u => u.Id == userId);
+            var user = await _context.Users.SingleOrDefaultAsync(u => u.Id == userId);
             var targetUser = await _context.Users.SingleOrDefaultAsync(u => u.UserName == name);
             if (targetUser == null || user == null)
             {

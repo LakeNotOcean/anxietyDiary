@@ -34,7 +34,7 @@ namespace API.Controllers
         {
             if (!Enum.IsDefined(typeof(RequestsEnum), req.requestType))
             {
-                BadRequest("wrong request type");
+                return BadRequest("wrong request type");
             }
             var request = (RequestsEnum)req.requestType;
             var userId = getCurrentUserId();
@@ -45,40 +45,17 @@ namespace API.Controllers
             {
                 target = await _context.Users.Include(u => u.Role)
                 .SingleOrDefaultAsync(u => u.UserName == (string)req.userName);
+                if (target is null)
+                {
+                    return BadRequest("wrong target user");
+                }
             }
-
-            if (target == null && request != RequestsEnum.BecomeDoctor || (!target?.isSearching ?? false))
+            var check = await checkIfRequestHasMeaning(user!, request, target);
+            if (!check)
             {
-                BadRequest("wrong request");
+                return BadRequest("impossible request");
             }
-
-            bool isPossible = false;
-            int? targetId = target is null ? null : target.Id;
-            switch (request)
-            {
-                case RequestsEnum.ViewAsDoctor:
-                    isPossible = (user?.Role.Name != RolesEnum.Patient.GetDescription());
-                    break;
-                case RequestsEnum.InviteDoctor:
-                    isPossible = (target?.Role.Name != RolesEnum.Patient.GetDescription());
-                    break;
-                case RequestsEnum.BecomeDoctor:
-                    isPossible = (user?.Role.Name == RolesEnum.Patient.GetDescription());
-                    break;
-            }
-
-            if (!isPossible)
-            {
-
-                return BadRequest("No access");
-            }
-            if ((request == RequestsEnum.BecomeDoctor && await isExists(userId, request)) ||
-                await isExists(userId, request, target?.Id ?? 0))
-            {
-                return Conflict();
-            }
-
-            await _context.UsersRequests.AddAsync(new UserRequest { UserSourceId = userId, Request = request, UserTargetId = targetId });
+            await _context.UsersRequests.AddAsync(new UserRequest { UserSourceId = userId, Request = request, UserTargetId = target?.Id });
             return await saveContext();
         }
 
@@ -115,7 +92,7 @@ namespace API.Controllers
         public async Task<ActionResult> RequestCancel(int requestId)
         {
             int userId = getCurrentUserId();
-            var request = _context.UsersRequests.SingleOrDefaultAsync(req => req.Id == requestId && req.UserTargetId == userId);
+            var request = await _context.UsersRequests.SingleOrDefaultAsync(req => req.Id == requestId && (req.UserTargetId == userId || req.UserSourceId == userId));
             if (request is null)
             {
                 return BadRequest("wrong request id");
@@ -137,7 +114,7 @@ namespace API.Controllers
 
             try
             {
-                changeContext(request);
+                await changeContextAsync(request);
             }
             catch (Exception)
             {
@@ -192,14 +169,52 @@ namespace API.Controllers
             };
         }
 
-        private async void changeContext(UserRequest request)
+        private async Task<bool> checkIfRequestHasMeaning(User source, RequestsEnum request, User? target)
+        {
+            if (target is null && request != RequestsEnum.BecomeDoctor || (target is null && !(target?.isSearching ?? false)))
+            {
+                return false;
+            }
+            if (target!.UserName == source.UserName)
+            {
+                return false;
+            }
+
+
+            if ((request == RequestsEnum.BecomeDoctor && await isExists(source.Id, request)) ||
+                await isExists(source.Id, request, target?.Id ?? 0))
+            {
+                return false;
+            }
+
+            bool isPossible = false;
+
+            switch (request)
+            {
+                case RequestsEnum.ViewAsDoctor:
+                    isPossible = (source.Role.Name != RolesEnum.Patient.GetDescription() &&
+                    !await _context.UserDoctors.AnyAsync(ud => ud.DoctorId == source.Id && ud.PatientId == target!.Id));
+                    break;
+                case RequestsEnum.InviteDoctor:
+                    isPossible = (source.Role.Name != RolesEnum.Patient.GetDescription() &&
+                    !await _context.UserDoctors.AnyAsync(ud => ud.DoctorId == target!.Id && ud.PatientId == source.Id));
+                    break;
+                case RequestsEnum.BecomeDoctor:
+                    isPossible = (source.Role.Name == RolesEnum.Patient.GetDescription());
+                    break;
+            }
+
+
+            return isPossible;
+        }
+
+        private async Task changeContextAsync(UserRequest request)
         {
             var userSource = await _context.Users.SingleOrDefaultAsync(u => u.Id == request.UserSourceId);
             switch (request.Request)
             {
                 case RequestsEnum.BecomeDoctor:
                     userSource!.Role = await _context.Roles.SingleOrDefaultAsync(r => r.Name == RolesEnum.Doctor.GetDescription());
-                    _context.Update(userSource);
                     return;
             }
             int targetId = request.UserTargetId ?? 0;

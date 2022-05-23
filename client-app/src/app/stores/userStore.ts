@@ -1,5 +1,13 @@
+import LoginForm from "@src/features/users/LoginForm";
 import { history } from "@src/index";
-import { makeObservable, observable, observe, runInAction, values } from "mobx";
+import {
+  makeAutoObservable,
+  makeObservable,
+  observable,
+  observe,
+  runInAction,
+  values,
+} from "mobx";
 import agent from "../api/agent";
 import { UserRoleEnum } from "../enums/UserEnum";
 import {
@@ -14,13 +22,12 @@ export default class UserStore {
   user: User | null = null;
   isLoginForm: boolean | null = null;
   userDoctors: UserInfo[] | null = null;
+  patientList: UserInfo[] | null = null;
+  date: Date | null = null;
+  dates: Date[] | null = null;
 
   constructor() {
-    makeObservable(this, {
-      user: observable,
-      isLoginForm: observable,
-      userDoctors: observable,
-    });
+    makeAutoObservable(this);
   }
 
   setIsLoginForm(value: boolean) {
@@ -127,7 +134,23 @@ export default class UserStore {
         this.userDoctors = this.userDoctors.filter(
           (d) => d.userName != doctorName
         );
-        runInAction(() => store.commonStore.setAppLoaded(false));
+        store.commonStore.setAppLoaded(false);
+      });
+    } catch (error) {
+      runInAction(() => store.commonStore.setAppLoaded(false));
+      throw error;
+    }
+  };
+
+  removePatient = async (patientName: string) => {
+    try {
+      runInAction(() => store.commonStore.setAppLoaded(true));
+      await agent.users.removePatient(patientName);
+      runInAction(() => {
+        this.patientList = this.patientList.filter(
+          (p) => p.userName != patientName
+        );
+        store.commonStore.setAppLoaded(false);
       });
     } catch (error) {
       runInAction(() => store.commonStore.setAppLoaded(false));
@@ -139,6 +162,25 @@ export default class UserStore {
     try {
       const res = await agent.users.findDoctors(searchStr);
       return res;
+    } catch (error) {
+      throw error;
+    }
+  };
+  findPatients = async (searchStr: string): Promise<UserInfo[]> => {
+    try {
+      const res = await agent.users.findPatients(searchStr);
+      return res;
+    } catch (error) {
+      throw error;
+    }
+  };
+
+  getPatientList = async () => {
+    try {
+      const res = await agent.users.getPatients();
+      runInAction(() => {
+        this.patientList = res;
+      });
     } catch (error) {
       throw error;
     }
