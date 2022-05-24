@@ -23,7 +23,6 @@ namespace API.Controllers.Extensions
             });
             services.AddDbContext<DataContext>(opt =>
             {
-                Console.WriteLine(config.GetConnectionString("DefaultConnection"));
                 var serverVersion = new MySqlServerVersion(new System.Version(8, 0, 27));
                 opt.UseMySql(config.GetConnectionString("DefaultConnection"),
                              serverVersion,
@@ -39,7 +38,11 @@ namespace API.Controllers.Extensions
             {
                 opt.AddPolicy("CorsPolicy", policy =>
                 {
-                    policy.WithOrigins("http://localhost:3000").AllowAnyMethod().WithExposedHeaders("WWW-Authenticate", "Pagination").AllowAnyOrigin().AllowAnyHeader();
+                    policy.WithOrigins("http://localhost:3000")
+                    .AllowAnyMethod()
+                    .WithExposedHeaders("WWW-Authenticate", "Pagination")
+                    .AllowAnyOrigin()
+                    .AllowAnyHeader();
                 });
             });
 

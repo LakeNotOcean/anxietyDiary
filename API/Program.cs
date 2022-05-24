@@ -28,15 +28,14 @@ namespace anxietyDiary
             try
             {
                 var context = services.GetRequiredService<DataContext>();
-                context.Database.Migrate();
-                await Seed.SeedDiaryData(context);
-
+                await Seed.SeedDescriptionData(context);
                 var dbSetDiaries = context.GetDbSetDiariesTypes();
                 foreach (var diary in dbSetDiaries)
                 {
                     await DiariesCheck.Check(diary.Value.PropertyTypeInfo, context);
                 }
-
+                context.Database.Migrate();
+                await Seed.SeedDiaryData(context);
                 var userManager = services.GetRequiredService<UserManager<User>>();
                 await Seed.SeedUserData(context, userManager, services.GetRequiredService<ILogger<Seed>>());
             }
