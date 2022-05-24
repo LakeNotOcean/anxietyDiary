@@ -1,4 +1,5 @@
 import {
+  action,
   makeAutoObservable,
   makeObservable,
   observable,
@@ -20,21 +21,19 @@ export default class ModalStore {
   constructor() {
     makeObservable(this, {
       modal: observable,
+      openModal: action,
+      closeModal: action,
     });
   }
 
   openModal = (content: JSX.Element, header: string) => {
-    runInAction(() => {
-      this.modal.open = true;
-      this.modal.body = content;
-      this.modal.header = header;
-    });
+    this.modal.open = true;
+    this.modal.body = content;
+    this.modal.header = header;
   };
   closeModal = () => {
-    runInAction(() => {
-      this.modal.open = false;
-      this.modal.body = null;
-      this.modal.header = null;
-    });
+    this.modal.open = false;
+    this.modal.body = null;
+    this.modal.header = null;
   };
 }

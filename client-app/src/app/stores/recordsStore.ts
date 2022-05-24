@@ -3,6 +3,7 @@ import datesFromString from "@src/lib/DatesFromString";
 import { diaryDeserialize } from "@src/lib/DiaryDeserialize";
 import diarySerialize from "@src/lib/DiarySerialize";
 import {
+  action,
   makeAutoObservable,
   makeObservable,
   observable,
@@ -41,6 +42,12 @@ export default class RecordsStore {
       loading: observable,
       pagination: observable,
       pagingParams: observable,
+      setLoading: action,
+      setLoginForm: action,
+      setPagination: action,
+      setPagingParams: action,
+      setRecords: action,
+      selectRecord: action,
     });
   }
 
@@ -109,7 +116,7 @@ export default class RecordsStore {
   };
 
   openForm = (id?: number) => {
-    if (store.viewStore.isAnotherUser) {
+    if (store.viewStore.isAnotherUser()) {
       toast.error("Запись другого пользователя");
       return;
     }

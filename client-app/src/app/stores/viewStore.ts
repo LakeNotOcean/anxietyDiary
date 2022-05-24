@@ -1,5 +1,6 @@
 import datesFromString from "@src/lib/DatesFromString";
 import {
+  action,
   makeAutoObservable,
   makeObservable,
   observable,
@@ -18,7 +19,14 @@ export default class ViewStore {
   usersViews: IUserView[] = null;
 
   constructor() {
-    makeAutoObservable(this);
+    makeObservable(this, {
+      currDate: observable,
+      currUserView: observable,
+      dates: observable,
+      usersViews: observable,
+      setDates: action,
+      setUserView: action,
+    });
   }
 
   setDates = (dates: Date[]) => {
@@ -33,12 +41,20 @@ export default class ViewStore {
     }
   };
 
+  getCurrUserView = (): UserInfo => {
+    if (this.currUserView === null) {
+      return store.userStore.user;
+    }
+    return this.currUserView;
+  };
+
   isAnotherUser = (): boolean => {
     if (
       this.currUserView !== null &&
       store.userStore.user !== null &&
       this.currUserView.userName != store.userStore.user.userName
     ) {
+      console.log(this.currUserView, store.userStore.user);
       return true;
     }
     return false;
@@ -106,8 +122,8 @@ export default class ViewStore {
   get datesParams() {
     const params = new URLSearchParams();
     params.append("name", store.recordsStore.diaryDescription.ShortName);
-    if (this.isAnotherUser) {
-      params.append("userName", store.viewStore.currUserView.userName);
+    if (this.isAnotherUser()) {
+      params.append("userName", this.getCurrUserView().userName);
     }
     return params;
   }

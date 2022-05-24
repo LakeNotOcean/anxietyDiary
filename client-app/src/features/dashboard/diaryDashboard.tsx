@@ -90,7 +90,7 @@ export default observer(function DiaryDashBoard({
         </div>
         <div className="content-controller">
           <Calendar tileClassName={tileClassName} onClickDay={onDateClick} />
-          {!viewStore.isAnotherUser && (
+          {!viewStore.isAnotherUser() && (
             <Button
               positive
               content="Добавить запись"

@@ -1,4 +1,4 @@
-import { makeObservable, observable, observe, runInAction } from "mobx";
+import { action, makeObservable, observable, observe, runInAction } from "mobx";
 import { toast } from "react-toastify";
 import agent from "../api/agent";
 import { RequestTypeEnum } from "../enums/RequestEnum";
@@ -15,6 +15,9 @@ export default class RequestStore {
     makeObservable(this, {
       viewAsDoctorRequests: observable,
       inviteDoctorRequests: observable,
+      setInviteDoctorRequests: action,
+      setViewAsDoctorRequests: action,
+      setUserRequests: action,
     });
   }
 

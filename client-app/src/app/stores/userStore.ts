@@ -1,6 +1,7 @@
 import LoginForm from "@src/features/users/LoginForm";
 import { history } from "@src/index";
 import {
+  action,
   makeAutoObservable,
   makeObservable,
   observable,
@@ -36,6 +37,7 @@ export default class UserStore {
       date: observable,
       dates: observable,
       refreshTokenTimeout: observable,
+      setIsLoginForm: action,
     });
   }
 

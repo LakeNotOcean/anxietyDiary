@@ -1,4 +1,5 @@
 import {
+  action,
   makeAutoObservable,
   makeObservable,
   observable,
@@ -14,6 +15,8 @@ export default class CommonStore {
     makeObservable(this, {
       token: observable,
       appLoaded: observable,
+      setToken: action,
+      setAppLoaded: action,
     });
     reaction(
       () => this.token,
@@ -28,13 +31,9 @@ export default class CommonStore {
   }
 
   setToken = (token: string | null) => {
-    runInAction(() => {
-      this.token = token;
-    });
+    this.token = token;
   };
   setAppLoaded = (value: boolean) => {
-    runInAction(() => {
-      this.appLoaded = value;
-    });
+    this.appLoaded = value;
   };
 }
