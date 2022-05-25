@@ -22,7 +22,6 @@ namespace API.Controllers
     [Route("api/[controller]")]
     public class RequestController : BaseApiController
     {
-        //private readonly UserManager<User> _userManager;
         private readonly DiaryService _diaryService;
         public RequestController(DataContext context, DiaryService diaryService) : base(context)
         {
