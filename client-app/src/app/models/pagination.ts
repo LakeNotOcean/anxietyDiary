@@ -10,7 +10,6 @@ export interface Pagination {
 export class PaginatedResult<T> {
   data: T;
   pagination: Pagination;
-  timeZone: string;
 
   constructor(data: T, pagination: Pagination) {
     this.data = data;

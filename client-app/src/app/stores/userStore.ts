@@ -24,8 +24,6 @@ export default class UserStore {
   isLoginForm: boolean | null = null;
   userDoctors: UserInfo[] | null = null;
   patientList: UserInfo[] | null = null;
-  date: Date | null = null;
-  dates: Date[] | null = null;
   refreshTokenTimeout: any;
 
   constructor() {
@@ -34,8 +32,6 @@ export default class UserStore {
       isLoginForm: observable,
       userDoctors: observable,
       patientList: observable,
-      date: observable,
-      dates: observable,
       refreshTokenTimeout: observable,
       setIsLoginForm: action,
     });

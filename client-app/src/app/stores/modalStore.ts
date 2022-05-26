@@ -1,10 +1,4 @@
-import {
-  action,
-  makeAutoObservable,
-  makeObservable,
-  observable,
-  runInAction,
-} from "mobx";
+import { action, makeObservable, observable } from "mobx";
 
 interface Modal {
   open: boolean;

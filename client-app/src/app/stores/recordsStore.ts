@@ -221,7 +221,6 @@ export default class RecordsStore {
         this.pagingParams.setPreviousPage();
       }
       runInAction(() => {
-        // this.records = [...this.records.filter((r) => r.Id !== record.Id)];
         this.closeForm();
         this.setLoading(false);
       });
