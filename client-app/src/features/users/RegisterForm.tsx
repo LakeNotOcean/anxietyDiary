@@ -9,7 +9,6 @@ import {
   FormikValues,
 } from "formik";
 import { observer } from "mobx-react-lite";
-import { useEffect } from "react";
 import { Button } from "semantic-ui-react";
 import ValidationErrors from "../errors/ValidationErrors";
 import UserTextInput from "./userFormInput";
@@ -87,15 +86,17 @@ export default observer(function RegisterForm() {
   return (
     <Formik
       validate={validate}
-      initialValues={{
-        email: "",
-        password: "",
-        repeatPassword: "",
-        userName: "",
-        firstName: "",
-        secondName: "",
-        errors: null,
-      }}
+      initialValues={
+        {
+          email: "",
+          password: "",
+          repeatPassword: "",
+          userName: "",
+          firstName: "",
+          secondName: "",
+          errors: null,
+        } as UserRegisterRepFormValues
+      }
       onSubmit={handleSubmit}
     >
       {({ handleSubmit, isSubmitting, dirty, isValid, errors }) => {

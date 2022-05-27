@@ -48,19 +48,6 @@ export default observer(function DiaryForm({
     deleteRecord(record);
   }
 
-  var forms = columns.map((value) => {
-    return (
-      <Form.Field
-        control={TextArea}
-        label={value.Name}
-        placeholder={value.Name}
-        name={value.ShortName}
-        value={record.Columns.get(value.ShortName)}
-        onChange={handleInputChange}
-      />
-    );
-  });
-
   return (
     <Modal dimmer="blurring" open={true} closeIcon onClose={closeForm}>
       <Modal.Header text>Заполните форму</Modal.Header>
