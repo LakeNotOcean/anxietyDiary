@@ -16,11 +16,9 @@ import LoginForm from "@src/features/users/LoginForm";
 import DiaryInfo from "./layout/DiaryInfo";
 import UserInfo from "@src/features/users/UserInfo";
 import PatientList from "@src/features/users/PatientList";
-import { toJS } from "mobx";
 
 function App(): JSX.Element {
   console.log("app is active");
-  const [activeDiary, setActiveDiary] = useState<IDescription>(null);
   const { commonStore, userStore, modalStore } = useStore();
 
   useEffect(() => {
@@ -40,14 +38,11 @@ function App(): JSX.Element {
 
   if (commonStore.appLoaded) return <LoadingComponent content="Загрузка..." />;
 
-  function handleSetActiveDiary(diary: IDescription) {
-    setActiveDiary(diary);
-  }
   const routes = useRoutes([
     { path: "/", element: <div>HomePage</div> },
     {
       path: "/diary/:name/:dateString",
-      element: <Diary setActiveDiary={handleSetActiveDiary} />,
+      element: <Diary />,
     },
     {
       path: "/diaries",
@@ -75,10 +70,7 @@ function App(): JSX.Element {
     <div className="App">
       <ModalContainer />
       <ToastContainer position="bottom-right" hideProgressBar />
-      <NavBar
-        diaryShortName={activeDiary?.ShortName}
-        fullDiaryName={activeDiary?.Name}
-      />
+      <NavBar />
       <div className="Content">
         <Container>{routes}</Container>
       </div>

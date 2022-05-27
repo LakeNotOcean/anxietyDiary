@@ -8,13 +8,9 @@ import { useStore } from "../stores/store";
 import { observer } from "mobx-react-lite";
 import { PagingParams } from "../models/pagination";
 
-interface Props {
-  setActiveDiary: (diary: IDescription) => void;
-}
-
 let descriptions = CreateDescriptions();
 
-export function Diary({ setActiveDiary }: Props): JSX.Element {
+export function Diary(): JSX.Element {
   const { recordsStore, viewStore } = useStore();
 
   const { name, dateString } = useParams<{
@@ -24,12 +20,11 @@ export function Diary({ setActiveDiary }: Props): JSX.Element {
 
   const date = new Date(parseInt(dateString));
 
-  recordsStore.diaryDescription = descriptions.get(name);
-  viewStore.currDate = date;
-  recordsStore.pagingParams = new PagingParams(1, name);
+  recordsStore.setDescription(descriptions.get(name));
+  recordsStore.setPagingParams(new PagingParams(1, name));
+  viewStore.setCurrDate(date);
 
   useEffect(() => {
-    setActiveDiary(recordsStore.diaryDescription);
     viewStore.watchDiary(recordsStore.diaryDescription.ShortName);
   }, []);
 
@@ -50,7 +45,7 @@ export function Diary({ setActiveDiary }: Props): JSX.Element {
       await viewStore.watchDiary(recordsStore.diaryDescription.ShortName);
     };
     fetchApi();
-  }, [recordsStore]);
+  }, []);
 
   if (recordsStore.loading.isLoading) {
     return <LoadingComponent content={recordsStore.loading.message} />;

@@ -13,21 +13,19 @@ import "semantic-ui-css/semantic.min.css";
 import { NavLink, useNavigate } from "react-router-dom";
 import { observer } from "mobx-react-lite";
 import { useStore } from "../stores/store";
-import { toJS } from "mobx";
 import { UserRoleEnum } from "../enums/UserEnum";
+import { IDescription } from "../models/description";
 
-interface Props {
-  fullDiaryName?: string;
-  diaryShortName?: string;
-}
+// interface Props {
+//   fullDiaryName?: string;
+//   diaryShortName?: string;
+// }
 
-export default observer(function NavBar({
-  fullDiaryName,
-  diaryShortName,
-}: Props): JSX.Element {
-  const { userStore, viewStore } = useStore();
+export default observer(function NavBar(): JSX.Element {
+  const { userStore, viewStore, recordsStore } = useStore();
   const navigate = useNavigate();
   const [isNotView, setNotView] = useState(false);
+  const [diaryDescription, setDiaryDescription] = useState<IDescription>(null);
 
   useEffect(() => {
     const fetchApi = async () => {
@@ -43,9 +41,12 @@ export default observer(function NavBar({
           });
         });
       }
+      if (recordsStore.diaryDescription) {
+        setDiaryDescription(recordsStore.diaryDescription);
+      }
     };
     fetchApi();
-  }, [userStore.isLoggedIn, viewStore, userStore]);
+  }, [userStore.isLoggedIn, viewStore, recordsStore.diaryDescription]);
 
   function handleExistFromUserView() {
     viewStore.setUserView(null);
@@ -138,25 +139,25 @@ export default observer(function NavBar({
             />
           </Menu.Item>
         )}
-        {diaryShortName && (
+        {diaryDescription?.ShortName && (
           <MenuItem>
             <Button
               positive
               content="Подробнее"
               as={NavLink}
-              to={`/diaryinfo/${diaryShortName}`}
+              to={`/diaryinfo/${diaryDescription.ShortName}`}
             />
           </MenuItem>
         )}
 
-        {fullDiaryName && (
+        {diaryDescription && (
           // @ts-ignore
           <Header
             className="DiaryHeader"
             as={NavLink}
-            to={`/diary/${diaryShortName}/${Date.now()}`}
+            to={`/diary/${diaryDescription.ShortName}/${Date.now()}`}
           >
-            {fullDiaryName}
+            {diaryDescription.Name}
           </Header>
         )}
       </Container>

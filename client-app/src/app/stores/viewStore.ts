@@ -26,6 +26,7 @@ export default class ViewStore {
       usersViews: observable,
       setDates: action,
       setUserView: action,
+      setCurrDate: action,
     });
   }
 
@@ -33,11 +34,17 @@ export default class ViewStore {
     this.dates = dates;
   };
 
+  setCurrDate = (date: Date) => {
+    this.currDate = date;
+  };
+
   setUserView = (user: UserInfo) => {
     if (store.userStore.isLoggedIn) {
       this.currUserView = user;
+      this.dates = null;
     } else {
       this.currUserView = null;
+      this.dates = null;
     }
   };
 
@@ -101,6 +108,9 @@ export default class ViewStore {
   };
 
   loadDates = async () => {
+    if (!store.userStore.isLoggedIn) {
+      return;
+    }
     runInAction(() => {
       store.recordsStore.setLoading(true, "Загрузка записей...");
     });
