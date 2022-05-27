@@ -38,7 +38,7 @@ export default class UserStore {
   }
 
   setIsLoginForm(value: boolean) {
-    runInAction(() => (this.isLoginForm = value));
+    this.isLoginForm = value;
   }
   get isLoggedIn() {
     return !!this.user && this.user.role != UserRoleEnum.guest;

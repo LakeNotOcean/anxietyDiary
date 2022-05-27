@@ -9,6 +9,7 @@ import UserTextInput from "./userFormInput";
 
 export default observer(function LoginForm() {
   const { modalStore, userStore } = useStore();
+
   const validate = (values: UserLoginFormValues) => {
     let errors: FormikErrors<FormikValues> = {};
     if (!values.email) {
@@ -30,10 +31,12 @@ export default observer(function LoginForm() {
   return (
     <Formik
       validate={validate}
-      initialValues={{
-        email: "",
-        password: "",
-      }}
+      initialValues={
+        {
+          email: "",
+          password: "",
+        } as UserLoginFormValues
+      }
       onSubmit={(values, { setErrors, setSubmitting }) => {
         setSubmitting(true);
         userStore

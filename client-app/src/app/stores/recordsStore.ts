@@ -48,12 +48,18 @@ export default class RecordsStore {
       setPagingParams: action,
       setRecords: action,
       selectRecord: action,
+      setDescription: action,
     });
   }
+
+  setDescription = (descr: IDescription) => {
+    this.diaryDescription = descr;
+  };
 
   loadRecords = async () => {
     if (!store.userStore.isLoggedIn) {
       this.setLoginForm();
+      return;
     }
     runInAction(() => {
       this.setLoading(true, "Загрузка записей...");
