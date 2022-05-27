@@ -1,5 +1,5 @@
 import { ButtonState } from "@src/app/models/buttonState";
-import React, { useEffect, useRef, useState } from "react";
+import React, { useState } from "react";
 import { ButtonProps } from "semantic-ui-react";
 
 export default function useComponentVisible(initialStates: ButtonState[]) {
