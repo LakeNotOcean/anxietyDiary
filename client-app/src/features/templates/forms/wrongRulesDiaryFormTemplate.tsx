@@ -7,9 +7,8 @@ import {
 } from "../flows/textNodeTempalte";
 import { CreateDescriptions } from "@src/lib/CreateDescriptions";
 import { DiaryNameEnum } from "@src/app/enums/DiaryEnum";
-import { ChangeEvent, MutableRefObject, useRef, useState } from "react";
+import { ChangeEvent, useState } from "react";
 import { textNodeForm } from "../flows/textNode";
-import { IDiary } from "@src/app/models/diary";
 import { toast } from "react-toastify";
 
 export default function WrongRulesDiaryFormTemplate({

@@ -1,8 +1,7 @@
 import { UserRoleEnum } from "@src/app/enums/UserEnum";
 import { ReqInfo, requestMessage } from "@src/app/models/request";
-import { User, UserInfo } from "@src/app/models/user";
+import { UserInfo } from "@src/app/models/user";
 import { useStore } from "@src/app/stores/store";
-import { toJS } from "mobx";
 import { observer } from "mobx-react-lite";
 import { useEffect, useState } from "react";
 import {
@@ -47,10 +46,6 @@ export default observer(function UserInfo() {
   if (userStore.user === null) {
     console.log("user is still null");
     return <></>;
-  }
-
-  function handlerDeleteDoctor(doctorName: string) {
-    userStore.removeDoctor(doctorName);
   }
 
   return (

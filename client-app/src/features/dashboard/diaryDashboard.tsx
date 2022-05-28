@@ -48,7 +48,7 @@ export default observer(function DiaryDashBoard({
       // Check if a date React-Calendar wants to check is on the list of dates to add class to
       if (dates.find((d) => d.toDateString() == date.toDateString())) {
         let dateClassStr = "calendar-day record-day";
-        if (isAnotherUser) {
+        if (isAnotherUser()) {
           const lastViewDate = getDiaryLastViewDate(diaryName);
           console.log("lastViewDate", lastViewDate);
           if (date > lastViewDate) {
