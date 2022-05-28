@@ -10,6 +10,7 @@ import { DiaryNameEnum } from "@src/app/enums/DiaryEnum";
 import { ChangeEvent, MutableRefObject, useRef, useState } from "react";
 import { textNodeForm } from "../flows/textNode";
 import { IDiary } from "@src/app/models/diary";
+import { toast } from "react-toastify";
 
 export default function WrongRulesDiaryFormTemplate({
   record,
@@ -55,6 +56,10 @@ export default function WrongRulesDiaryFormTemplate({
 
   function handleRemoveNode(id: string, idNode: number) {
     const columnOfNodes = record.Columns.get(id) as String[];
+    if (columnOfNodes.length == 1) {
+      toast.warn("Должно содержаться хотя бы одно правило");
+      return;
+    }
     columnOfNodes.splice(idNode, 1);
     record.Columns.set(id, columnOfNodes);
     handleCustomInputChange(record);
