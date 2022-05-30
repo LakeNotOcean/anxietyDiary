@@ -53,17 +53,13 @@ namespace API.Controllers
 
             var doctorPatients = await _context.UserDoctors.Where(ud => ud.DoctorId == user.Id).Include(ud => ud.Patient).ToListAsync();
             var result = new List<UserViewDTO> { };
-            var diariesViewTasks = new List<Task<List<DiaryViewDTO>>>();
+            var diaryViewList = new List<List<DiaryViewDTO>>();
             foreach (var p in doctorPatients)
             {
-                diariesViewTasks.Add(Mediator.Send(new LastDatesDiaries.Query() { userDoctor = p }));
+                var res = await Mediator.Send(new LastDatesDiaries.Query() { userDoctor = p });
+                diaryViewList.Add(res);
 
             };
-            var diaryViewList = new List<List<DiaryViewDTO>>();
-            foreach (var task in diariesViewTasks)
-            {
-                diaryViewList.Add(await task);
-            }
             for (int i = 0; i < doctorPatients.Count; ++i)
             {
                 result.Add(new UserViewDTO

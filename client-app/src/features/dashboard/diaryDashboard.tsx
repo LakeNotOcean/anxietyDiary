@@ -52,7 +52,7 @@ export default observer(function DiaryDashBoard({
           const lastViewDate = getDiaryLastViewDate(diaryName);
           console.log("lastViewDate", lastViewDate);
           if (date > lastViewDate) {
-            dateClassStr = dateClassStr.concat(" ", "notview-day");
+            dateClassStr = dateClassStr.concat(" ", "calendar-day notview-day");
             console.log(dateClassStr);
           }
         }

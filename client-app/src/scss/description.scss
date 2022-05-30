@@ -1,0 +1,58 @@
+@import 'constant';
+
+.homepage h3{
+    color: $primaryColor;
+} 
+
+.description-content{
+    text-align: center;
+    position: relative;
+    background: #fff;
+    padding-top: 30px;
+    padding-left: 45px;
+    padding-right: 45px;
+    font-size: 20px;
+    font-weight: 400;
+    display: block;
+
+}
+
+.description-header{
+    text-align: center;
+    font-weight: 700;
+    color:$primaryColor;
+}
+
+.description-content h1{
+    color: $primaryColor;
+}
+
+.description-content ol:not([class])  li::marker
+{
+    text-decoration: solid;
+    
+    color: $primaryColor;
+}
+
+.description-content li{
+    margin-top: .7em;
+    margin-bottom: .7em;
+    padding-left: 10px;
+}
+
+.description-content p{
+    margin-bottom:30px;
+}
+
+.description-content .quote{
+    border: none !important;
+    background: #f2f5f9;
+    position: relative;
+    padding: 20px 20px;
+    text-align: left;
+    margin-bottom:30px;
+}
+
+.description-content .quote >p {
+    margin-bottom:0;
+}
