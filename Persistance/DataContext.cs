@@ -43,15 +43,12 @@ namespace Persistance
         private void buildDiaries(ref ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<DiaryDescription>().Property(d => d.Type).HasConversion<int>();
-
             modelBuilder.Entity<DiaryColumn>().Property(d => d.ValueType).HasConversion<int>();
-
             var splitStringConverter = new ValueConverter<List<string>, string>(
                 v => string.Join(";", v),
                 v => v.Split(new[] { ';' }).ToList());
 
             modelBuilder.Entity<WrongRulesDiary>().Property(d => d.Column2).HasConversion(splitStringConverter);
-
         }
 
         private void buildUsers(ref ModelBuilder modelBuilder)

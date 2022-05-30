@@ -2,7 +2,6 @@ using System;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Text.Json.Serialization;
-using Domain.User;
 
 namespace Domain.Diaries
 {
@@ -22,7 +21,7 @@ namespace Domain.Diaries
         public DateTime ChangeDate { get; set; }
 
         [Required]
-        [ForeignKey("User")]
         public int DiaryUserId { get; set; }
+        public Domain.User.User DiaryUser { get; set; }
     }
 }

@@ -195,7 +195,7 @@ namespace API.Controllers
                     !await _context.UserDoctors.AnyAsync(ud => ud.DoctorId == source.Id && ud.PatientId == target!.Id));
                     break;
                 case RequestsEnum.InviteDoctor:
-                    isPossible = (source.Role.Name != RolesEnum.Patient.GetDescription() &&
+                    isPossible = (
                     !await _context.UserDoctors.AnyAsync(ud => ud.DoctorId == target!.Id && ud.PatientId == source.Id));
                     break;
                 case RequestsEnum.BecomeDoctor:

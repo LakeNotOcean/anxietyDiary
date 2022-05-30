@@ -1,7 +1,6 @@
 using System;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using Toolbelt.ComponentModel.DataAnnotations.Schema.V5;
 
 namespace Domain.User
 {
@@ -17,8 +16,9 @@ namespace Domain.User
         public string DiaryName { get; set; }
 
         [Required]
-        [ForeignKey("UserDoctor"), Column(Order = 1)]
         public int UserDoctorId { get; set; }
+
+        public UserDoctor UserDoctor { get; set; }
         public DateTime LastViewDate { get; set; }
     }
 }

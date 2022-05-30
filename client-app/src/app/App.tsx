@@ -16,6 +16,7 @@ import LoginForm from "@src/features/users/LoginForm";
 import DiaryInfo from "./layout/DiaryInfo";
 import UserInfo from "@src/features/users/UserInfo";
 import PatientList from "@src/features/users/PatientList";
+import HomePage from "./layout/HomePage";
 
 function App(): JSX.Element {
   console.log("app is active");
@@ -39,7 +40,7 @@ function App(): JSX.Element {
   if (commonStore.appLoaded) return <LoadingComponent content="Загрузка..." />;
 
   const routes = useRoutes([
-    { path: "/", element: <div>HomePage</div> },
+    { path: "/", element: <HomePage /> },
     {
       path: "/diary/:name/:dateString",
       element: <Diary />,

@@ -116,18 +116,6 @@ export default observer(function NavBar(): JSX.Element {
               </Dropdown>
               {isNotView && <div className="redicon"></div>}
             </Menu.Item>
-            {viewStore.isAnotherUser() && (
-              <Menu.Item>
-                <Button
-                  primary
-                  labelPosition="right"
-                  onClick={handleExistFromUserView}
-                >
-                  <Icon name="x" />
-                  {viewStore.currUserView.userName}
-                </Button>
-              </Menu.Item>
-            )}
           </>
         )}
         {!userStore.isLoggedIn && (
@@ -148,6 +136,18 @@ export default observer(function NavBar(): JSX.Element {
               to={`/diaryinfo/${diaryDescription.ShortName}`}
             />
           </MenuItem>
+        )}
+        {viewStore.isAnotherUser() && (
+          <Menu.Item>
+            <Button
+              primary
+              labelPosition="right"
+              onClick={handleExistFromUserView}
+            >
+              <Icon name="x" />
+              {viewStore.currUserView.userName}
+            </Button>
+          </Menu.Item>
         )}
 
         {diaryDescription && (

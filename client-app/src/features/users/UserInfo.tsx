@@ -28,6 +28,9 @@ export default observer(function UserInfo() {
   useEffect(() => {
     const fetchApi = async () => {
       await userStore.getCurrUser();
+      if (!userStore.isLoggedIn) {
+        return;
+      }
       await userStore.loadDoctors();
       await requestStore.loadViewAsDoctorRequests();
       if (userStore.user?.role != UserRoleEnum.patient) {

@@ -18,6 +18,5 @@ namespace Domain.User
 
         public int? UserTargetId { get; set; }
         public User UserTarget { get; set; }
-
     }
 }
